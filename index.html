@@ -1,0 +1,827 @@
+﻿<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Makerij App</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    * { box-sizing: border-box; font-family: Arial, sans-serif; }
+    body { margin: 0; background: #f4f4f4; color: #111; }
+    header { background: #111; color: white; padding: 18px; text-align: center; }
+    header h1 { margin: 0; font-size: 22px; }
+
+    nav {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      padding: 12px;
+      background: white;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+
+    nav button, nav select {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid #111;
+      border-radius: 12px;
+      background: white;
+      color: #111;
+      font-size: 15px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    main { padding: 14px; max-width: 900px; margin: auto; }
+
+    section {
+      display: none;
+      background: white;
+      padding: 16px;
+      border-radius: 14px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      margin-bottom: 20px;
+    }
+
+    section.active { display: block; }
+    h2 { margin-top: 0; font-size: 20px; }
+    h3 { margin-top: 18px; font-size: 17px; }
+
+    label {
+      display: block;
+      margin-top: 12px;
+      font-weight: bold;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 12px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      font-size: 16px;
+    }
+
+    textarea { min-height: 70px; resize: vertical; }
+
+    .save-btn {
+      width: 100%;
+      margin-top: 16px;
+      padding: 14px;
+      border: none;
+      border-radius: 12px;
+      background: #111;
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .secondary-btn {
+      width: 100%;
+      margin-top: 12px;
+      padding: 13px;
+      border: 2px solid #111;
+      border-radius: 12px;
+      background: white;
+      color: #111;
+      font-size: 15px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .card {
+      background: #f7f7f7;
+      border-radius: 12px;
+      padding: 12px;
+      margin-top: 12px;
+      border-left: 5px solid #111;
+    }
+
+    .card strong {
+      display: block;
+      font-size: 17px;
+      margin-bottom: 4px;
+    }
+
+    .muted { color: #666; font-size: 14px; }
+
+    .delete-btn {
+      margin-top: 10px;
+      padding: 8px 12px;
+      border: none;
+      border-radius: 8px;
+      background: #c40000;
+      color: white;
+      cursor: pointer;
+    }
+
+    .refresh-btn {
+      width: 100%;
+      margin-bottom: 12px;
+      padding: 12px;
+      border: 2px solid #111;
+      border-radius: 12px;
+      background: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .blok {
+      background: #f7f7f7;
+      border-radius: 12px;
+      padding: 12px;
+      margin-bottom: 18px;
+      border: 1px solid #ddd;
+    }
+
+    hr {
+      border: none;
+      border-top: 1px solid #ddd;
+      margin: 18px 0;
+    }
+
+    @media (max-width: 700px) {
+      nav { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+
+<body>
+<header>
+  <h1>Makerij Dagplanning & Voorraad</h1>
+</header>
+
+<nav>
+  <select onchange="openTab(this.value); this.value='';">
+    <option value="">Productie</option>
+    <option value="vandaag">Vandaag gemaakt</option>
+    <option value="avond">Moet gemaakt worden avond</option>
+  </select>
+
+  <select onchange="openTab(this.value); this.value='';">
+    <option value="">Voorraad / THT</option>
+    <option value="koellades">Koellades afdeling</option>
+    <option value="koelcellen">Koelcellen boven</option>
+  </select>
+
+  <button onclick="openTab('verkoop')">Verkoop & Derving</button>
+</nav>
+
+<main>
+
+  <button class="refresh-btn" onclick="laadAlles()">Vernieuwen</button>
+
+  <section id="vandaag" class="active">
+    <h2>Vandaag gemaakt</h2>
+
+    <div class="blok">
+      <h3>Nieuw product toevoegen</h3>
+
+      <label>Nieuwe productnaam</label>
+      <input id="nieuwProductNaam" placeholder="Bijv. Wrap tonijn">
+
+      <label>Categorie</label>
+      <select id="nieuwProductCategorie">
+        <option>Broodjes</option>
+        <option>Wraps</option>
+        <option>Salades</option>
+        <option>Soep</option>
+        <option>Maaltijden</option>
+        <option>Pinsa</option>
+        <option>Fruit</option>
+        <option>Anders</option>
+      </select>
+
+      <button class="secondary-btn" onclick="voegNieuwProductToe()">Product toevoegen</button>
+    </div>
+
+    <label>Product</label>
+    <select id="vandaagProduct"></select>
+
+    <label>Aantal gemaakt</label>
+    <input id="vandaagAantal" type="number" min="0">
+
+    <label>Medewerker</label>
+    <input id="vandaagMedewerker" placeholder="Naam medewerker">
+
+    <label>Opmerking</label>
+    <textarea id="vandaagOpmerking"></textarea>
+
+    <button class="save-btn" onclick="slaProductieOp()">Opslaan</button>
+    <div id="vandaagList"></div>
+  </section>
+
+  <section id="avond">
+    <h2>Moet gemaakt worden in de avond</h2>
+
+    <label>Product</label>
+    <select id="avondProduct"></select>
+
+    <label>Aantal nodig</label>
+    <input id="avondAantal" type="number" min="0">
+
+    <label>Prioriteit</label>
+    <select id="avondPrioriteit">
+      <option>Normaal</option>
+      <option>Hoog</option>
+      <option>Laag</option>
+    </select>
+
+    <label>Status</label>
+    <select id="avondStatus">
+      <option>Nog doen</option>
+      <option>Bezig</option>
+      <option>Klaar</option>
+    </select>
+
+    <label>Opmerking</label>
+    <textarea id="avondOpmerking"></textarea>
+
+    <button class="save-btn" onclick="slaAvondplanningOp()">Opslaan</button>
+    <div id="avondList"></div>
+  </section>
+
+  <section id="koellades">
+    <h2>Voorraad koellades afdeling</h2>
+
+    <label>Product</label>
+    <select id="koelladesProduct"></select>
+
+    <label>Aantal</label>
+    <input id="koelladesAantal" type="number" min="0">
+
+    <label>Productiedatum</label>
+    <input id="koelladesProductiedatum" type="date">
+
+    <label>THT-datum</label>
+    <input id="koelladesTht" type="date">
+
+    <label>Locatie</label>
+    <input id="koelladesLocatie" placeholder="Bijv. Koellade 1">
+
+    <button class="save-btn" onclick="slaKoelladesOp()">Opslaan</button>
+    <div id="koelladesList"></div>
+  </section>
+
+  <section id="koelcellen">
+    <h2>Voorraad koelcellen boven</h2>
+
+    <label>Product</label>
+    <select id="koelcellenProduct"></select>
+
+    <label>Aantal</label>
+    <input id="koelcellenAantal" type="number" min="0">
+
+    <label>Productiedatum</label>
+    <input id="koelcellenProductiedatum" type="date">
+
+    <label>THT-datum</label>
+    <input id="koelcellenTht" type="date">
+
+    <label>Locatie</label>
+    <input id="koelcellenLocatie" placeholder="Bijv. Koelcel boven / krat 3">
+
+    <button class="save-btn" onclick="slaKoelcellenOp()">Opslaan</button>
+    <div id="koelcellenList"></div>
+  </section>
+
+  <section id="verkoop">
+    <h2>Verkoop & Derving</h2>
+    <p class="muted">Kies een product en vul alleen de derving in. Verkocht wordt berekend als: gemaakt - derving.</p>
+
+    <label>Product</label>
+    <select id="verkoopProduct"></select>
+
+    <label>Aantal derving</label>
+    <input id="verkoopDerving" type="number" min="0">
+
+    <button class="save-btn" onclick="slaDervingOp()">Opslaan</button>
+    <div id="verkoopList"></div>
+  </section>
+
+</main>
+
+<script>
+  const SUPABASE_URL = "https://iifgmebfinlftozezyvs.supabase.co";
+  const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlpZmdtZWJmaW5sZnRvemV6eXZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTAzNDY2OTYsImV4cCI6MjA2NTkyMjY5Nn0.VFMr45HrUxw2stkuaPw8V7nTwkHdL70JhoSiWbI5wKQ";
+
+  const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  let producten = [];
+  let productieData = [];
+  let avondData = [];
+  let koelladesData = [];
+  let koelcellenData = [];
+  let dervingData = [];
+
+  function openTab(tabId) {
+    if (!tabId) return;
+
+    document.querySelectorAll("section").forEach(section => {
+      section.classList.remove("active");
+    });
+
+    document.getElementById(tabId).classList.add("active");
+  }
+
+  function productNaam(productId) {
+    const product = producten.find(p => String(p.id) === String(productId));
+    return product ? product.naam : "Onbekend product";
+  }
+
+  async function laadAlles() {
+    await laadProducten();
+    await laadProductie();
+    await laadAvondplanning();
+    await laadKoellades();
+    await laadKoelcellen();
+    await laadDerving();
+    renderAlles();
+  }
+
+  async function laadProducten() {
+    const { data, error } = await db
+      .from("producten")
+      .select("*")
+      .eq("actief", true)
+      .order("naam", { ascending: true });
+
+    if (error) {
+      console.error(error);
+      alert("Producten laden mislukt.");
+      return;
+    }
+
+    producten = data || [];
+    vulProductDropdowns();
+  }
+
+  function vulProductDropdowns() {
+    const dropdowns = [
+      "vandaagProduct",
+      "avondProduct",
+      "koelladesProduct",
+      "koelcellenProduct",
+      "verkoopProduct"
+    ];
+
+    dropdowns.forEach(id => {
+      const select = document.getElementById(id);
+      if (!select) return;
+
+      select.innerHTML = `<option value="">Kies product</option>`;
+
+      producten.forEach(product => {
+        const option = document.createElement("option");
+        option.value = product.id;
+        option.textContent = product.naam;
+        select.appendChild(option);
+      });
+    });
+  }
+
+  async function voegNieuwProductToe() {
+    const naam = document.getElementById("nieuwProductNaam").value.trim();
+    const categorie = document.getElementById("nieuwProductCategorie").value;
+
+    if (!naam) {
+      alert("Vul eerst een productnaam in.");
+      return;
+    }
+
+    const { error } = await db.from("producten").insert({
+      naam: naam,
+      categorie: categorie,
+      actief: true
+    });
+
+    if (error) {
+      console.error(error);
+
+      if (error.code === "23505") {
+        alert("Dit product bestaat al.");
+      } else {
+        alert("Product toevoegen mislukt.");
+      }
+
+      return;
+    }
+
+    document.getElementById("nieuwProductNaam").value = "";
+    document.getElementById("nieuwProductCategorie").selectedIndex = 0;
+
+    await laadAlles();
+    alert("Product toegevoegd.");
+  }
+
+  async function laadProductie() {
+    const { data, error } = await db
+      .from("productie")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      console.error(error);
+      alert("Productie laden mislukt.");
+      return;
+    }
+
+    productieData = data || [];
+  }
+
+  async function laadAvondplanning() {
+    const { data, error } = await db
+      .from("avondplanning")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      console.error(error);
+      alert("Avondplanning laden mislukt.");
+      return;
+    }
+
+    avondData = data || [];
+  }
+
+  async function laadKoellades() {
+    const { data, error } = await db
+      .from("voorraad_koellades")
+      .select("*")
+      .order("tht_datum", { ascending: true });
+
+    if (error) {
+      console.error(error);
+      alert("Koellades laden mislukt.");
+      return;
+    }
+
+    koelladesData = data || [];
+  }
+
+  async function laadKoelcellen() {
+    const { data, error } = await db
+      .from("voorraad_koelcellen")
+      .select("*")
+      .order("tht_datum", { ascending: true });
+
+    if (error) {
+      console.error(error);
+      alert("Koelcellen laden mislukt.");
+      return;
+    }
+
+    koelcellenData = data || [];
+  }
+
+  async function laadDerving() {
+    const { data, error } = await db
+      .from("derving")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      console.error(error);
+      alert("Derving laden mislukt.");
+      return;
+    }
+
+    dervingData = data || [];
+  }
+
+  async function slaProductieOp() {
+    const productId = document.getElementById("vandaagProduct").value;
+    const aantal = Number(document.getElementById("vandaagAantal").value || 0);
+    const medewerker = document.getElementById("vandaagMedewerker").value;
+    const opmerking = document.getElementById("vandaagOpmerking").value;
+
+    if (!productId || aantal <= 0) {
+      alert("Kies een product en vul een aantal in.");
+      return;
+    }
+
+    const { error } = await db.from("productie").insert({
+      product_id: productId,
+      aantal,
+      medewerker,
+      opmerking
+    });
+
+    if (error) {
+      console.error(error);
+      alert("Productie opslaan mislukt.");
+      return;
+    }
+
+    clearFields("vandaag");
+    await laadAlles();
+  }
+
+  async function slaAvondplanningOp() {
+    const productId = document.getElementById("avondProduct").value;
+    const aantal = Number(document.getElementById("avondAantal").value || 0);
+    const prioriteit = document.getElementById("avondPrioriteit").value;
+    const status = document.getElementById("avondStatus").value;
+    const opmerking = document.getElementById("avondOpmerking").value;
+
+    if (!productId || aantal <= 0) {
+      alert("Kies een product en vul een aantal in.");
+      return;
+    }
+
+    const { error } = await db.from("avondplanning").insert({
+      product_id: productId,
+      aantal,
+      prioriteit,
+      status,
+      opmerking
+    });
+
+    if (error) {
+      console.error(error);
+      alert("Avondplanning opslaan mislukt.");
+      return;
+    }
+
+    clearFields("avond");
+    await laadAlles();
+  }
+
+  async function slaKoelladesOp() {
+    const productId = document.getElementById("koelladesProduct").value;
+    const aantal = Number(document.getElementById("koelladesAantal").value || 0);
+
+    if (!productId || aantal <= 0) {
+      alert("Kies een product en vul een aantal in.");
+      return;
+    }
+
+    const { error } = await db.from("voorraad_koellades").insert({
+      product_id: productId,
+      aantal,
+      productiedatum: document.getElementById("koelladesProductiedatum").value || null,
+      tht_datum: document.getElementById("koelladesTht").value || null,
+      locatie: document.getElementById("koelladesLocatie").value
+    });
+
+    if (error) {
+      console.error(error);
+      alert("Koelladevoorraad opslaan mislukt.");
+      return;
+    }
+
+    clearFields("koellades");
+    await laadAlles();
+  }
+
+  async function slaKoelcellenOp() {
+    const productId = document.getElementById("koelcellenProduct").value;
+    const aantal = Number(document.getElementById("koelcellenAantal").value || 0);
+
+    if (!productId || aantal <= 0) {
+      alert("Kies een product en vul een aantal in.");
+      return;
+    }
+
+    const { error } = await db.from("voorraad_koelcellen").insert({
+      product_id: productId,
+      aantal,
+      productiedatum: document.getElementById("koelcellenProductiedatum").value || null,
+      tht_datum: document.getElementById("koelcellenTht").value || null,
+      locatie: document.getElementById("koelcellenLocatie").value
+    });
+
+    if (error) {
+      console.error(error);
+      alert("Koelcelvoorraad opslaan mislukt.");
+      return;
+    }
+
+    clearFields("koelcellen");
+    await laadAlles();
+  }
+
+  async function slaDervingOp() {
+    const productId = document.getElementById("verkoopProduct").value;
+    const aantal = Number(document.getElementById("verkoopDerving").value || 0);
+
+    if (!productId || aantal < 0) {
+      alert("Kies een product en vul derving in.");
+      return;
+    }
+
+    const { error } = await db.from("derving").insert({
+      product_id: productId,
+      aantal
+    });
+
+    if (error) {
+      console.error(error);
+      alert("Derving opslaan mislukt.");
+      return;
+    }
+
+    clearFields("verkoop");
+    await laadAlles();
+  }
+
+  async function verwijderRij(tabel, id) {
+    const { error } = await db
+      .from(tabel)
+      .delete()
+      .eq("id", id);
+
+    if (error) {
+      console.error(error);
+      alert("Verwijderen mislukt. Controleer of je delete-policy in Supabase aanstaat.");
+      return;
+    }
+
+    await laadAlles();
+  }
+
+  function clearFields(sectionId) {
+    const fields = document.querySelectorAll(`#${sectionId} input, #${sectionId} textarea`);
+    fields.forEach(field => field.value = "");
+
+    const selects = document.querySelectorAll(`#${sectionId} select`);
+    selects.forEach(select => select.selectedIndex = 0);
+  }
+
+  function totaalGemaakt(productId) {
+    return productieData
+      .filter(item => String(item.product_id) === String(productId))
+      .reduce((totaal, item) => totaal + Number(item.aantal || 0), 0);
+  }
+
+  function totaalDerving(productId) {
+    return dervingData
+      .filter(item => String(item.product_id) === String(productId))
+      .reduce((totaal, item) => totaal + Number(item.aantal || 0), 0);
+  }
+
+  function adviesVoorProduct(productId) {
+    const gemaakt = totaalGemaakt(productId);
+    const derving = totaalDerving(productId);
+    const verkocht = Math.max(gemaakt - derving, 0);
+
+    const verkoopPercentage = gemaakt > 0 ? Math.round((verkocht / gemaakt) * 100) : 0;
+    const dervingPercentage = gemaakt > 0 ? Math.round((derving / gemaakt) * 100) : 0;
+
+    let advies = "Geen productie gevonden";
+
+    if (gemaakt > 0 && dervingPercentage <= 5) {
+      advies = "Meer of gelijk produceren";
+    } else if (gemaakt > 0 && dervingPercentage <= 15) {
+      advies = "Gelijk houden";
+    } else if (gemaakt > 0) {
+      advies = "Minder produceren";
+    }
+
+    return { gemaakt, derving, verkocht, verkoopPercentage, dervingPercentage, advies };
+  }
+
+  function renderAlles() {
+    renderProductie();
+    renderAvondplanning();
+    renderKoellades();
+    renderKoelcellen();
+    renderVerkoopDerving();
+  }
+
+  function renderProductie() {
+    const list = document.getElementById("vandaagList");
+
+    if (productieData.length === 0) {
+      list.innerHTML = `<p class="muted">Nog geen productie ingevoerd.</p>`;
+      return;
+    }
+
+    list.innerHTML = productieData.map(item => `
+      <div class="card">
+        <strong>${productNaam(item.product_id)}</strong>
+        ${item.aantal} stuks gemaakt<br>
+        Medewerker: ${item.medewerker || "-"}<br>
+        Opmerking: ${item.opmerking || "-"}<br>
+        <span class="muted">${item.datum || "-"} - ${new Date(item.created_at).toLocaleTimeString("nl-NL", { hour: "2-digit", minute: "2-digit" })}</span><br>
+        <button class="delete-btn" onclick="verwijderRij('productie', ${item.id})">Verwijderen</button>
+      </div>
+    `).join("");
+  }
+
+  function renderAvondplanning() {
+    const list = document.getElementById("avondList");
+
+    if (avondData.length === 0) {
+      list.innerHTML = `<p class="muted">Nog geen avondplanning ingevoerd.</p>`;
+      return;
+    }
+
+    list.innerHTML = avondData.map(item => `
+      <div class="card">
+        <strong>${productNaam(item.product_id)}</strong>
+        Aantal nodig: ${item.aantal}<br>
+        Prioriteit: ${item.prioriteit || "-"}<br>
+        Status: ${item.status || "-"}<br>
+        Opmerking: ${item.opmerking || "-"}<br>
+        <span class="muted">${item.datum || "-"}</span><br>
+        <button class="delete-btn" onclick="verwijderRij('avondplanning', ${item.id})">Verwijderen</button>
+      </div>
+    `).join("");
+  }
+
+  function renderKoellades() {
+    const list = document.getElementById("koelladesList");
+
+    if (koelladesData.length === 0) {
+      list.innerHTML = `<p class="muted">Nog geen voorraad in koellades ingevoerd.</p>`;
+      return;
+    }
+
+    list.innerHTML = koelladesData.map(item => `
+      <div class="card">
+        <strong>${productNaam(item.product_id)}</strong>
+        Aantal: ${item.aantal}<br>
+        Productiedatum: ${item.productiedatum || "-"}<br>
+        THT: ${item.tht_datum || "-"}<br>
+        Locatie: ${item.locatie || "-"}<br>
+        <button class="delete-btn" onclick="verwijderRij('voorraad_koellades', ${item.id})">Verwijderen</button>
+      </div>
+    `).join("");
+  }
+
+  function renderKoelcellen() {
+    const list = document.getElementById("koelcellenList");
+
+    if (koelcellenData.length === 0) {
+      list.innerHTML = `<p class="muted">Nog geen voorraad in koelcellen ingevoerd.</p>`;
+      return;
+    }
+
+    list.innerHTML = koelcellenData.map(item => `
+      <div class="card">
+        <strong>${productNaam(item.product_id)}</strong>
+        Aantal: ${item.aantal}<br>
+        Productiedatum: ${item.productiedatum || "-"}<br>
+        THT: ${item.tht_datum || "-"}<br>
+        Locatie: ${item.locatie || "-"}<br>
+        <button class="delete-btn" onclick="verwijderRij('voorraad_koelcellen', ${item.id})">Verwijderen</button>
+      </div>
+    `).join("");
+  }
+
+  function renderVerkoopDerving() {
+    const list = document.getElementById("verkoopList");
+
+    if (producten.length === 0) {
+      list.innerHTML = `<p class="muted">Nog geen producten gevonden.</p>`;
+      return;
+    }
+
+    const productenMetData = producten
+      .map(product => {
+        const cijfers = adviesVoorProduct(product.id);
+        return { ...product, ...cijfers };
+      })
+      .filter(product => product.gemaakt > 0 || product.derving > 0);
+
+    if (productenMetData.length === 0) {
+      list.innerHTML = `<p class="muted">Nog geen productie of derving ingevoerd.</p>`;
+      return;
+    }
+
+    list.innerHTML = productenMetData.map(product => `
+      <div class="card">
+        <strong>${product.naam}</strong>
+        Gemaakt: ${product.gemaakt}<br>
+        Derving: ${product.derving}<br>
+        Verkocht: ${product.verkocht}<br>
+        Verkooppercentage: ${product.verkoopPercentage}%<br>
+        Dervingspercentage: ${product.dervingPercentage}%<br>
+        Advies: ${product.advies}
+      </div>
+    `).join("");
+
+    if (dervingData.length > 0) {
+      list.innerHTML += `<h3>Ingevoerde derving</h3>`;
+
+      list.innerHTML += dervingData.map(item => `
+        <div class="card">
+          <strong>${productNaam(item.product_id)}</strong>
+          Derving: ${item.aantal}<br>
+          <span class="muted">${item.datum || "-"}</span><br>
+          <button class="delete-btn" onclick="verwijderRij('derving', ${item.id})">Verwijderen</button>
+        </div>
+      `).join("");
+    }
+  }
+
+  laadAlles();
+</script>
+</body>
+</html>
