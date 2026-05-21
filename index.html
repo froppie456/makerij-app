@@ -13,32 +13,48 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
-    * { box-sizing: border-box; font-family: Arial, sans-serif; }
+    * {
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
 
     body {
       margin: 0;
       background: #f4f4f4;
       color: #111;
-      padding-bottom: 92px;
+      padding-bottom: 88px;
+      animation: pageFadeIn 0.35s ease;
+    }
+
+    @keyframes pageFadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
     }
 
     header {
       background: #111;
       color: white;
-      padding: 18px;
+      padding: 14px;
       text-align: center;
       position: sticky;
       top: 0;
       z-index: 20;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.18);
     }
 
     header h1 {
       margin: 0;
-      font-size: 21px;
+      font-size: 19px;
+      letter-spacing: 0.2px;
     }
 
     main {
-      padding: 14px;
+      padding: 10px;
       max-width: 900px;
       margin: auto;
     }
@@ -46,44 +62,81 @@
     section {
       display: none;
       background: white;
-      padding: 16px;
+      padding: 12px;
       border-radius: 14px;
       box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-      margin-bottom: 18px;
+      margin-bottom: 12px;
     }
 
-    section.active { display: block; }
+    section.active {
+      display: block;
+      animation: sectionIn 0.28s ease both;
+    }
 
-    h2 { margin-top: 0; font-size: 21px; }
-    h3 { margin-top: 18px; font-size: 17px; }
+    @keyframes sectionIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px) scale(0.99);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    h2 {
+      margin: 0 0 8px 0;
+      font-size: 20px;
+    }
+
+    h3 {
+      margin: 8px 0;
+      font-size: 16px;
+    }
 
     label {
       display: block;
-      margin-top: 12px;
+      margin-top: 8px;
       font-weight: bold;
+      font-size: 14px;
     }
 
     input, select, textarea {
       width: 100%;
-      padding: 12px;
-      margin-top: 5px;
+      padding: 10px;
+      margin-top: 4px;
       border: 1px solid #ccc;
       border-radius: 10px;
-      font-size: 16px;
+      font-size: 15px;
       background: white;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: #111;
+      box-shadow: 0 0 0 3px rgba(0,0,0,0.08);
     }
 
     textarea {
-      min-height: 70px;
+      min-height: 56px;
       resize: vertical;
+    }
+
+    button {
+      transition: transform 0.16s ease, box-shadow 0.16s ease, background 0.16s ease, opacity 0.16s ease;
+    }
+
+    button:active {
+      transform: scale(0.97);
     }
 
     .save-btn, .secondary-btn, .refresh-btn {
       width: 100%;
-      margin-top: 14px;
-      padding: 14px;
+      margin-top: 10px;
+      padding: 12px;
       border-radius: 12px;
-      font-size: 16px;
+      font-size: 15px;
       font-weight: bold;
       cursor: pointer;
     }
@@ -92,6 +145,11 @@
       border: none;
       background: #111;
       color: white;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.14);
+    }
+
+    .save-btn:hover {
+      box-shadow: 0 6px 14px rgba(0,0,0,0.18);
     }
 
     .secondary-btn, .refresh-btn {
@@ -100,42 +158,146 @@
       color: #111;
     }
 
+    .secondary-btn:hover, .refresh-btn:hover {
+      background: #f2f2f2;
+    }
+
+    .refresh-btn {
+      margin-bottom: 10px;
+    }
+
+    .accordion {
+      background: #f7f7f7;
+      border-radius: 12px;
+      border: 1px solid #ddd;
+      margin-bottom: 10px;
+      overflow: hidden;
+      transition: box-shadow 0.22s ease, transform 0.22s ease;
+    }
+
+    .accordion[open] {
+      box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+    }
+
+    .accordion summary {
+      cursor: pointer;
+      padding: 11px 12px;
+      font-weight: bold;
+      list-style: none;
+      user-select: none;
+    }
+
+    .accordion summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .accordion summary::after {
+      content: "+";
+      float: right;
+      font-weight: bold;
+      transition: transform 0.22s ease;
+    }
+
+    .accordion[open] summary::after {
+      content: "–";
+      transform: rotate(180deg);
+    }
+
+    .accordion-content {
+      padding: 0 12px 12px 12px;
+      border-top: 1px solid #ddd;
+      animation: accordionIn 0.25s ease both;
+    }
+
+    @keyframes accordionIn {
+      from {
+        opacity: 0;
+        transform: translateY(-6px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
     .card {
       background: #f7f7f7;
       border-radius: 12px;
-      padding: 12px;
-      margin-top: 12px;
+      padding: 10px;
+      margin-top: 10px;
       border-left: 5px solid #111;
-      line-height: 1.45;
+      line-height: 1.35;
+      font-size: 14px;
+      animation: cardIn 0.28s ease both;
+      transition: transform 0.18s ease, box-shadow 0.18s ease, opacity 0.18s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+
+    @keyframes cardIn {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .card.klaar {
+      border-left-color: #138a36;
+      opacity: 0.82;
     }
 
     .card strong {
       display: block;
-      font-size: 17px;
-      margin-bottom: 4px;
-    }
-
-    .blok {
-      background: #f7f7f7;
-      border-radius: 12px;
-      padding: 12px;
-      margin-bottom: 18px;
-      border: 1px solid #ddd;
+      font-size: 16px;
+      margin-bottom: 3px;
     }
 
     .muted {
       color: #666;
-      font-size: 14px;
+      font-size: 13px;
+      margin: 4px 0 8px 0;
     }
 
     .delete-btn {
-      margin-top: 10px;
-      padding: 8px 12px;
+      margin-top: 8px;
+      padding: 8px 10px;
       border: none;
       border-radius: 8px;
       background: #c40000;
       color: white;
       cursor: pointer;
+      font-size: 13px;
+    }
+
+    .done-btn {
+      margin-top: 8px;
+      margin-right: 6px;
+      padding: 8px 10px;
+      border: none;
+      border-radius: 8px;
+      background: #138a36;
+      color: white;
+      cursor: pointer;
+      font-size: 13px;
+    }
+
+    .undo-btn {
+      margin-top: 8px;
+      margin-right: 6px;
+      padding: 8px 10px;
+      border: none;
+      border-radius: 8px;
+      background: #555;
+      color: white;
+      cursor: pointer;
+      font-size: 13px;
     }
 
     .bottom-nav {
@@ -143,13 +305,14 @@
       bottom: 0;
       left: 0;
       right: 0;
-      background: white;
+      background: rgba(255,255,255,0.96);
+      backdrop-filter: blur(10px);
       border-top: 1px solid #ddd;
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 6px;
-      padding: 8px;
-      padding-bottom: calc(8px + env(safe-area-inset-bottom));
+      gap: 5px;
+      padding: 7px;
+      padding-bottom: calc(7px + env(safe-area-inset-bottom));
       z-index: 50;
       box-shadow: 0 -2px 10px rgba(0,0,0,0.08);
     }
@@ -157,44 +320,54 @@
     .bottom-nav button {
       border: 1px solid #ccc;
       background: #f7f7f7;
-      border-radius: 12px;
-      padding: 10px 6px;
-      font-size: 12px;
+      border-radius: 11px;
+      padding: 8px 4px;
+      font-size: 11px;
       font-weight: bold;
       color: #111;
       cursor: pointer;
-      min-height: 48px;
+      min-height: 44px;
     }
 
     .bottom-nav button.active {
       background: #111;
       color: white;
       border-color: #111;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.18);
     }
 
     .stat-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 10px;
-      margin-top: 12px;
+      gap: 8px;
+      margin-top: 8px;
     }
 
     .stat {
       background: #f7f7f7;
       border-radius: 12px;
-      padding: 12px;
+      padding: 10px;
       border: 1px solid #ddd;
+      font-size: 13px;
+      animation: cardIn 0.28s ease both;
     }
 
     .stat strong {
       display: block;
-      font-size: 22px;
-      margin-top: 4px;
+      font-size: 20px;
+      margin-top: 3px;
     }
 
     @media (min-width: 800px) {
-      .bottom-nav {
-        grid-template-columns: repeat(7, 1fr);
+      .bottom-nav { grid-template-columns: repeat(8, 1fr); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        animation: none !important;
+        transition: none !important;
+        scroll-behavior: auto !important;
       }
     }
   </style>
@@ -211,14 +384,16 @@
   <section id="vandaag" class="active">
     <h2>Vandaag gemaakt</h2>
 
-    <div class="blok">
-      <h3>Nieuw product toevoegen</h3>
-      <label>Nieuwe productnaam</label>
-      <input id="nieuwProductNaam_vandaag" placeholder="Bijv. Wrap tonijn">
-      <label>Categorie</label>
-      <select id="nieuwProductCategorie_vandaag"></select>
-      <button class="secondary-btn" onclick="voegNieuwProductToe('vandaag')">Product toevoegen</button>
-    </div>
+    <details class="accordion">
+      <summary>Nieuw product toevoegen</summary>
+      <div class="accordion-content">
+        <label>Nieuwe productnaam</label>
+        <input id="nieuwProductNaam_vandaag" placeholder="Bijv. Wrap tonijn">
+        <label>Categorie</label>
+        <select id="nieuwProductCategorie_vandaag"></select>
+        <button class="secondary-btn" onclick="voegNieuwProductToe('vandaag')">Product toevoegen</button>
+      </div>
+    </details>
 
     <label>Product</label>
     <select id="vandaagProduct"></select>
@@ -237,39 +412,24 @@
   </section>
 
   <section id="avond">
-    <h2>Moet gemaakt worden avond</h2>
+    <h2>Te maken vanavond</h2>
 
-    <div class="blok">
-      <h3>Nieuw product toevoegen</h3>
-      <label>Nieuwe productnaam</label>
-      <input id="nieuwProductNaam_avond" placeholder="Bijv. Salade tonijn">
-      <label>Categorie</label>
-      <select id="nieuwProductCategorie_avond"></select>
-      <button class="secondary-btn" onclick="voegNieuwProductToe('avond')">Product toevoegen</button>
-    </div>
+    <details class="accordion">
+      <summary>Nieuw product toevoegen</summary>
+      <div class="accordion-content">
+        <label>Nieuwe productnaam</label>
+        <input id="nieuwProductNaam_avond" placeholder="Bijv. Salade tonijn">
+        <label>Categorie</label>
+        <select id="nieuwProductCategorie_avond"></select>
+        <button class="secondary-btn" onclick="voegNieuwProductToe('avond')">Product toevoegen</button>
+      </div>
+    </details>
 
     <label>Product</label>
     <select id="avondProduct"></select>
 
-    <label>Aantal nodig</label>
+    <label>Aantal te maken</label>
     <input id="avondAantal" type="number" min="0">
-
-    <label>Prioriteit</label>
-    <select id="avondPrioriteit">
-      <option>Normaal</option>
-      <option>Hoog</option>
-      <option>Laag</option>
-    </select>
-
-    <label>Status</label>
-    <select id="avondStatus">
-      <option>Nog doen</option>
-      <option>Bezig</option>
-      <option>Klaar</option>
-    </select>
-
-    <label>Opmerking</label>
-    <textarea id="avondOpmerking"></textarea>
 
     <button class="save-btn" onclick="slaAvondplanningOp()">Opslaan</button>
     <div id="avondList"></div>
@@ -278,14 +438,16 @@
   <section id="koellades">
     <h2>Voorraad koellades</h2>
 
-    <div class="blok">
-      <h3>Nieuw product toevoegen</h3>
-      <label>Nieuwe productnaam</label>
-      <input id="nieuwProductNaam_koellades" placeholder="Bijv. Broodje gezond">
-      <label>Categorie</label>
-      <select id="nieuwProductCategorie_koellades"></select>
-      <button class="secondary-btn" onclick="voegNieuwProductToe('koellades')">Product toevoegen</button>
-    </div>
+    <details class="accordion">
+      <summary>Nieuw product toevoegen</summary>
+      <div class="accordion-content">
+        <label>Nieuwe productnaam</label>
+        <input id="nieuwProductNaam_koellades" placeholder="Bijv. Broodje gezond">
+        <label>Categorie</label>
+        <select id="nieuwProductCategorie_koellades"></select>
+        <button class="secondary-btn" onclick="voegNieuwProductToe('koellades')">Product toevoegen</button>
+      </div>
+    </details>
 
     <label>Product</label>
     <select id="koelladesProduct"></select>
@@ -309,14 +471,16 @@
   <section id="koelcellen">
     <h2>Voorraad koelcellen</h2>
 
-    <div class="blok">
-      <h3>Nieuw product toevoegen</h3>
-      <label>Nieuwe productnaam</label>
-      <input id="nieuwProductNaam_koelcellen" placeholder="Bijv. Bak wraps kip">
-      <label>Categorie</label>
-      <select id="nieuwProductCategorie_koelcellen"></select>
-      <button class="secondary-btn" onclick="voegNieuwProductToe('koelcellen')">Product toevoegen</button>
-    </div>
+    <details class="accordion">
+      <summary>Nieuw product toevoegen</summary>
+      <div class="accordion-content">
+        <label>Nieuwe productnaam</label>
+        <input id="nieuwProductNaam_koelcellen" placeholder="Bijv. Bak wraps kip">
+        <label>Categorie</label>
+        <select id="nieuwProductCategorie_koelcellen"></select>
+        <button class="secondary-btn" onclick="voegNieuwProductToe('koelcellen')">Product toevoegen</button>
+      </div>
+    </details>
 
     <label>Product</label>
     <select id="koelcellenProduct"></select>
@@ -340,14 +504,16 @@
   <section id="verkoop">
     <h2>Verkoop & Derving</h2>
 
-    <div class="blok">
-      <h3>Nieuw product toevoegen</h3>
-      <label>Nieuwe productnaam</label>
-      <input id="nieuwProductNaam_verkoop" placeholder="Bijv. Pinsa tonijn">
-      <label>Categorie</label>
-      <select id="nieuwProductCategorie_verkoop"></select>
-      <button class="secondary-btn" onclick="voegNieuwProductToe('verkoop')">Product toevoegen</button>
-    </div>
+    <details class="accordion">
+      <summary>Nieuw product toevoegen</summary>
+      <div class="accordion-content">
+        <label>Nieuwe productnaam</label>
+        <input id="nieuwProductNaam_verkoop" placeholder="Bijv. Pinsa tonijn">
+        <label>Categorie</label>
+        <select id="nieuwProductCategorie_verkoop"></select>
+        <button class="secondary-btn" onclick="voegNieuwProductToe('verkoop')">Product toevoegen</button>
+      </div>
+    </details>
 
     <p class="muted">Kies een product en vul alleen de derving in. Verkocht wordt berekend als: gemaakt - derving.</p>
 
@@ -363,7 +529,7 @@
 
   <section id="dagrapport">
     <h2>Dagrapportage</h2>
-    <p class="muted">Overzicht van vandaag op basis van ingevoerde productie, avondplanning, voorraad en derving.</p>
+    <p class="muted">Overzicht van vandaag op basis van productie, avondplanning, voorraad en derving.</p>
     <div id="dagrapportContent"></div>
   </section>
 
@@ -416,13 +582,8 @@
   function openTab(tabId) {
     if (!tabId) return;
 
-    document.querySelectorAll("section").forEach(section => {
-      section.classList.remove("active");
-    });
-
-    document.querySelectorAll(".bottom-nav button").forEach(button => {
-      button.classList.remove("active");
-    });
+    document.querySelectorAll("section").forEach(section => section.classList.remove("active"));
+    document.querySelectorAll(".bottom-nav button").forEach(button => button.classList.remove("active"));
 
     document.getElementById(tabId).classList.add("active");
 
@@ -665,9 +826,6 @@
   async function slaAvondplanningOp() {
     const productId = document.getElementById("avondProduct").value;
     const aantal = Number(document.getElementById("avondAantal").value || 0);
-    const prioriteit = document.getElementById("avondPrioriteit").value;
-    const status = document.getElementById("avondStatus").value;
-    const opmerking = document.getElementById("avondOpmerking").value;
 
     if (!productId || aantal <= 0) {
       alert("Kies een product en vul een aantal in.");
@@ -677,9 +835,9 @@
     const { error } = await db.from("avondplanning").insert({
       product_id: Number(productId),
       aantal,
-      prioriteit,
-      status,
-      opmerking
+      prioriteit: null,
+      status: "Nog doen",
+      opmerking: null
     });
 
     if (error) {
@@ -689,6 +847,23 @@
     }
 
     clearFields("avond");
+    await laadAlles();
+  }
+
+  async function toggleAvondKlaar(id, huidigeStatus) {
+    const nieuweStatus = huidigeStatus === "Klaar" ? "Nog doen" : "Klaar";
+
+    const { error } = await db
+      .from("avondplanning")
+      .update({ status: nieuweStatus })
+      .eq("id", id);
+
+    if (error) {
+      console.error("Status aanpassen fout:", error);
+      alert("Status aanpassen mislukt: " + error.message);
+      return;
+    }
+
     await laadAlles();
   }
 
@@ -868,17 +1043,21 @@
       return;
     }
 
-    list.innerHTML = avondData.map(item => `
-      <div class="card">
-        <strong>${productNaam(item.product_id)}</strong>
-        Aantal nodig: ${item.aantal}<br>
-        Prioriteit: ${item.prioriteit || "-"}<br>
-        Status: ${item.status || "-"}<br>
-        Opmerking: ${item.opmerking || "-"}<br>
-        <span class="muted">${item.datum || "-"}</span><br>
-        <button class="delete-btn" onclick="verwijderRij('avondplanning', ${item.id})">Verwijderen</button>
-      </div>
-    `).join("");
+    list.innerHTML = avondData.map(item => {
+      const klaar = item.status === "Klaar";
+      return `
+        <div class="card ${klaar ? "klaar" : ""}">
+          <strong>${klaar ? "✓ " : ""}${productNaam(item.product_id)}</strong>
+          Aantal te maken: ${item.aantal}<br>
+          Status: ${klaar ? "Klaar" : "Nog doen"}<br>
+          <span class="muted">${item.datum || "-"}</span><br>
+          <button class="${klaar ? "undo-btn" : "done-btn"}" onclick="toggleAvondKlaar(${item.id}, '${item.status || "Nog doen"}')">
+            ${klaar ? "Terug naar nog doen" : "Afvinken als klaar"}
+          </button>
+          <button class="delete-btn" onclick="verwijderRij('avondplanning', ${item.id})">Verwijderen</button>
+        </div>
+      `;
+    }).join("");
   }
 
   function renderKoellades() {
@@ -944,6 +1123,8 @@
 
     const productieVandaag = productieData.filter(item => isVandaag(item.datum));
     const avondVandaag = avondData.filter(item => isVandaag(item.datum));
+    const avondKlaar = avondVandaag.filter(item => item.status === "Klaar");
+    const avondNogDoen = avondVandaag.filter(item => item.status !== "Klaar");
     const dervingVandaag = dervingData.filter(item => isVandaag(item.datum));
 
     const totaalProductie = productieVandaag.reduce((sum, item) => sum + Number(item.aantal || 0), 0);
@@ -954,9 +1135,21 @@
       <div class="stat-grid">
         <div class="stat">Gemaakt vandaag<strong>${totaalProductie}</strong></div>
         <div class="stat">Derving vandaag<strong>${totaalDervingVandaag}</strong></div>
-        <div class="stat">Avondplanning<strong>${totaalAvond}</strong></div>
-        <div class="stat">Voorraadregels<strong>${koelladesData.length + koelcellenData.length}</strong></div>
+        <div class="stat">Avond totaal<strong>${totaalAvond}</strong></div>
+        <div class="stat">Avond klaar<strong>${avondKlaar.length}/${avondVandaag.length}</strong></div>
       </div>
+
+      <h3>Avond nog doen</h3>
+      ${
+        avondNogDoen.length === 0
+        ? `<p class="muted">Alles is afgevinkt of er staat niets gepland.</p>`
+        : avondNogDoen.map(item => `
+          <div class="card">
+            <strong>${productNaam(item.product_id)}</strong>
+            ${item.aantal} stuks nog maken
+          </div>
+        `).join("")
+      }
 
       <h3>Productie vandaag</h3>
       ${
