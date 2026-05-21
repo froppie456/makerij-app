@@ -174,23 +174,11 @@
 
     <div class="blok">
       <h3>Nieuw product toevoegen</h3>
-
       <label>Nieuwe productnaam</label>
-      <input id="nieuwProductNaam" placeholder="Bijv. Wrap tonijn">
-
+      <input id="nieuwProductNaam_vandaag" placeholder="Bijv. Wrap tonijn">
       <label>Categorie</label>
-      <select id="nieuwProductCategorie">
-        <option>Broodjes</option>
-        <option>Wraps</option>
-        <option>Salades</option>
-        <option>Soep</option>
-        <option>Maaltijden</option>
-        <option>Pinsa</option>
-        <option>Fruit</option>
-        <option>Anders</option>
-      </select>
-
-      <button class="secondary-btn" onclick="voegNieuwProductToe()">Product toevoegen</button>
+      <select id="nieuwProductCategorie_vandaag"></select>
+      <button class="secondary-btn" onclick="voegNieuwProductToe('vandaag')">Product toevoegen</button>
     </div>
 
     <label>Product</label>
@@ -211,6 +199,15 @@
 
   <section id="avond">
     <h2>Moet gemaakt worden in de avond</h2>
+
+    <div class="blok">
+      <h3>Nieuw product toevoegen</h3>
+      <label>Nieuwe productnaam</label>
+      <input id="nieuwProductNaam_avond" placeholder="Bijv. Salade tonijn">
+      <label>Categorie</label>
+      <select id="nieuwProductCategorie_avond"></select>
+      <button class="secondary-btn" onclick="voegNieuwProductToe('avond')">Product toevoegen</button>
+    </div>
 
     <label>Product</label>
     <select id="avondProduct"></select>
@@ -242,6 +239,15 @@
   <section id="koellades">
     <h2>Voorraad koellades afdeling</h2>
 
+    <div class="blok">
+      <h3>Nieuw product toevoegen</h3>
+      <label>Nieuwe productnaam</label>
+      <input id="nieuwProductNaam_koellades" placeholder="Bijv. Broodje gezond">
+      <label>Categorie</label>
+      <select id="nieuwProductCategorie_koellades"></select>
+      <button class="secondary-btn" onclick="voegNieuwProductToe('koellades')">Product toevoegen</button>
+    </div>
+
     <label>Product</label>
     <select id="koelladesProduct"></select>
 
@@ -264,6 +270,15 @@
   <section id="koelcellen">
     <h2>Voorraad koelcellen boven</h2>
 
+    <div class="blok">
+      <h3>Nieuw product toevoegen</h3>
+      <label>Nieuwe productnaam</label>
+      <input id="nieuwProductNaam_koelcellen" placeholder="Bijv. Bak wraps kip">
+      <label>Categorie</label>
+      <select id="nieuwProductCategorie_koelcellen"></select>
+      <button class="secondary-btn" onclick="voegNieuwProductToe('koelcellen')">Product toevoegen</button>
+    </div>
+
     <label>Product</label>
     <select id="koelcellenProduct"></select>
 
@@ -285,6 +300,16 @@
 
   <section id="verkoop">
     <h2>Verkoop & Derving</h2>
+
+    <div class="blok">
+      <h3>Nieuw product toevoegen</h3>
+      <label>Nieuwe productnaam</label>
+      <input id="nieuwProductNaam_verkoop" placeholder="Bijv. Pinsa tonijn">
+      <label>Categorie</label>
+      <select id="nieuwProductCategorie_verkoop"></select>
+      <button class="secondary-btn" onclick="voegNieuwProductToe('verkoop')">Product toevoegen</button>
+    </div>
+
     <p class="muted">Kies een product en vul alleen de derving in. Verkocht wordt berekend als: gemaakt - derving.</p>
 
     <label>Product</label>
@@ -304,6 +329,15 @@
 
   const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
+  const categorieen = [
+    "Broodjes",
+    "Maaltijdcomponenten",
+    "Pinsa",
+    "Salades",
+    "Voorraad te maken",
+    "Wraps"
+  ];
+
   let producten = [];
   let productieData = [];
   let avondData = [];
@@ -321,12 +355,37 @@
     document.getElementById(tabId).classList.add("active");
   }
 
+  function vulCategorieDropdowns() {
+    const ids = [
+      "nieuwProductCategorie_vandaag",
+      "nieuwProductCategorie_avond",
+      "nieuwProductCategorie_koellades",
+      "nieuwProductCategorie_koelcellen",
+      "nieuwProductCategorie_verkoop"
+    ];
+
+    ids.forEach(id => {
+      const select = document.getElementById(id);
+      if (!select) return;
+
+      select.innerHTML = "";
+
+      categorieen.forEach(categorie => {
+        const option = document.createElement("option");
+        option.value = categorie;
+        option.textContent = categorie;
+        select.appendChild(option);
+      });
+    });
+  }
+
   function productNaam(productId) {
     const product = producten.find(p => String(p.id) === String(productId));
     return product ? product.naam : "Onbekend product";
   }
 
   async function laadAlles() {
+    vulCategorieDropdowns();
     await laadProducten();
     await laadProductie();
     await laadAvondplanning();
@@ -377,9 +436,12 @@
     });
   }
 
-  async function voegNieuwProductToe() {
-    const naam = document.getElementById("nieuwProductNaam").value.trim();
-    const categorie = document.getElementById("nieuwProductCategorie").value;
+  async function voegNieuwProductToe(menu) {
+    const naamInput = document.getElementById("nieuwProductNaam_" + menu);
+    const categorieSelect = document.getElementById("nieuwProductCategorie_" + menu);
+
+    const naam = naamInput.value.trim();
+    const categorie = categorieSelect.value;
 
     if (!naam) {
       alert("Vul eerst een productnaam in.");
@@ -404,8 +466,8 @@
       return;
     }
 
-    document.getElementById("nieuwProductNaam").value = "";
-    document.getElementById("nieuwProductCategorie").selectedIndex = 0;
+    naamInput.value = "";
+    categorieSelect.selectedIndex = 0;
 
     await laadAlles();
     alert("Product toegevoegd.");
