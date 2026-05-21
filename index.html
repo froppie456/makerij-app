@@ -13,211 +13,56 @@
   <style>
     *{box-sizing:border-box;font-family:Arial,sans-serif;-webkit-tap-highlight-color:transparent}
     html{scroll-behavior:smooth}
-    body{
-      margin:0;
-      background:linear-gradient(180deg,#f6f8f6 0%,#eeeeee 100%);
-      color:#111;
-      padding-bottom:92px;
-      animation:pageFadeIn .45s cubic-bezier(.22,1,.36,1);
-    }
+    body{margin:0;background:linear-gradient(180deg,#f6f8f6 0%,#eeeeee 100%);color:#111;padding-bottom:92px;animation:pageFadeIn .45s cubic-bezier(.22,1,.36,1)}
     @keyframes pageFadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
-    header{
-      background:linear-gradient(135deg,#101010,#1b1b1b);
-      color:white;
-      padding:15px;
-      text-align:center;
-      position:sticky;
-      top:0;
-      z-index:20;
-      box-shadow:0 8px 26px rgba(0,0,0,.22);
-    }
+    header{background:linear-gradient(135deg,#101010,#1b1b1b);color:white;padding:15px;text-align:center;position:sticky;top:0;z-index:20;box-shadow:0 8px 26px rgba(0,0,0,.22)}
     header h1{margin:0;font-size:19px;letter-spacing:.3px}
     main{padding:10px;max-width:900px;margin:auto}
-    section{
-      display:none;
-      background:rgba(255,255,255,.96);
-      padding:12px;
-      border-radius:18px;
-      box-shadow:0 10px 28px rgba(0,0,0,.08);
-      margin-bottom:12px;
-      border:1px solid rgba(255,255,255,.7);
-    }
+    section{display:none;background:rgba(255,255,255,.96);padding:12px;border-radius:18px;box-shadow:0 10px 28px rgba(0,0,0,.08);margin-bottom:12px;border:1px solid rgba(255,255,255,.7)}
     section.active{display:block;animation:sectionIn .38s cubic-bezier(.22,1,.36,1) both}
     @keyframes sectionIn{from{opacity:0;transform:translateY(16px) scale(.985)}to{opacity:1;transform:translateY(0) scale(1)}}
     h2{margin:0 0 8px 0;font-size:20px}
     h3{margin:8px 0;font-size:16px}
     label{display:block;margin-top:8px;font-weight:bold;font-size:14px}
-    input,select,textarea{
-      width:100%;
-      padding:11px;
-      margin-top:4px;
-      border:1px solid #d4d4d4;
-      border-radius:12px;
-      font-size:15px;
-      background:linear-gradient(180deg,#fff,#fbfbfb);
-      transition:border-color .25s ease,box-shadow .25s ease,transform .2s ease,background .25s ease;
-      box-shadow:inset 0 1px 2px rgba(0,0,0,.03);
-    }
-    input:focus,select:focus,textarea:focus{
-      outline:none;
-      border-color:#19a65a;
-      background:white;
-      box-shadow:0 0 0 4px rgba(25,166,90,.13),0 8px 18px rgba(0,0,0,.06);
-      transform:translateY(-1px);
-    }
+    input,select,textarea{width:100%;padding:11px;margin-top:4px;border:1px solid #d4d4d4;border-radius:12px;font-size:15px;background:linear-gradient(180deg,#fff,#fbfbfb);transition:border-color .25s ease,box-shadow .25s ease,transform .2s ease,background .25s ease;box-shadow:inset 0 1px 2px rgba(0,0,0,.03)}
+    input:focus,select:focus,textarea:focus{outline:none;border-color:#19a65a;background:white;box-shadow:0 0 0 4px rgba(25,166,90,.13),0 8px 18px rgba(0,0,0,.06);transform:translateY(-1px)}
     textarea{min-height:56px;resize:vertical}
-    button{
-      transition:transform .2s cubic-bezier(.22,1,.36,1),box-shadow .2s ease,background .2s ease,opacity .2s ease,border-color .2s ease;
-    }
+    button{transition:transform .2s cubic-bezier(.22,1,.36,1),box-shadow .2s ease,background .2s ease,opacity .2s ease,border-color .2s ease}
     button:active{transform:scale(.965)}
-    .save-btn,.secondary-btn,.refresh-btn{
-      width:100%;
-      margin-top:10px;
-      padding:12px;
-      border-radius:14px;
-      font-size:15px;
-      font-weight:bold;
-      cursor:pointer;
-    }
-    .save-btn{
-      border:none;
-      background:linear-gradient(135deg,#111,#242424);
-      color:white;
-      box-shadow:0 8px 18px rgba(0,0,0,.18),0 0 0 1px rgba(255,255,255,.05) inset;
-    }
+    .save-btn,.secondary-btn,.refresh-btn{width:100%;margin-top:10px;padding:12px;border-radius:14px;font-size:15px;font-weight:bold;cursor:pointer}
+    .save-btn{border:none;background:linear-gradient(135deg,#111,#242424);color:white;box-shadow:0 8px 18px rgba(0,0,0,.18),0 0 0 1px rgba(255,255,255,.05) inset}
     .save-btn:hover{box-shadow:0 10px 24px rgba(0,0,0,.22),0 0 14px rgba(25,166,90,.18)}
-    .secondary-btn,.refresh-btn{
-      border:1px solid #151515;
-      background:linear-gradient(180deg,#fff,#f6f6f6);
-      color:#111;
-      box-shadow:0 5px 14px rgba(0,0,0,.07);
-    }
-    .secondary-btn:hover,.refresh-btn:hover{
-      border-color:#19a65a;
-      box-shadow:0 8px 18px rgba(0,0,0,.09),0 0 12px rgba(25,166,90,.14);
-      transform:translateY(-1px);
-    }
+    .secondary-btn,.refresh-btn{border:1px solid #151515;background:linear-gradient(180deg,#fff,#f6f6f6);color:#111;box-shadow:0 5px 14px rgba(0,0,0,.07)}
+    .secondary-btn:hover,.refresh-btn:hover{border-color:#19a65a;box-shadow:0 8px 18px rgba(0,0,0,.09),0 0 12px rgba(25,166,90,.14);transform:translateY(-1px)}
     .refresh-btn{margin-bottom:10px}
-    .accordion{
-      background:linear-gradient(180deg,#fbfbfb,#f5f5f5);
-      border-radius:15px;
-      border:1px solid #ddd;
-      margin-bottom:10px;
-      overflow:hidden;
-      transition:box-shadow .3s ease,transform .3s ease,border-color .3s ease;
-      box-shadow:0 3px 10px rgba(0,0,0,.04);
-    }
-    .accordion[open]{
-      border-color:rgba(25,166,90,.45);
-      box-shadow:0 8px 22px rgba(0,0,0,.08),0 0 18px rgba(25,166,90,.08);
-    }
-    .accordion summary{
-      cursor:pointer;
-      padding:12px;
-      font-weight:bold;
-      list-style:none;
-      user-select:none;
-    }
+    .accordion{background:linear-gradient(180deg,#fbfbfb,#f5f5f5);border-radius:15px;border:1px solid #ddd;margin-bottom:10px;overflow:hidden;transition:box-shadow .3s ease,transform .3s ease,border-color .3s ease;box-shadow:0 3px 10px rgba(0,0,0,.04)}
+    .accordion[open]{border-color:rgba(25,166,90,.45);box-shadow:0 8px 22px rgba(0,0,0,.08),0 0 18px rgba(25,166,90,.08)}
+    .accordion summary{cursor:pointer;padding:12px;font-weight:bold;list-style:none;user-select:none}
     .accordion summary::-webkit-details-marker{display:none}
-    .accordion summary::after{
-      content:"+";
-      float:right;
-      font-weight:bold;
-      transition:transform .3s ease,color .3s ease;
-      color:#16864b;
-    }
+    .accordion summary::after{content:"+";float:right;font-weight:bold;transition:transform .3s ease,color .3s ease;color:#16864b}
     .accordion[open] summary::after{content:"–";transform:rotate(180deg);color:#111}
     .accordion-content{padding:0 12px 12px 12px;border-top:1px solid #e4e4e4;animation:accordionIn .32s cubic-bezier(.22,1,.36,1) both}
     @keyframes accordionIn{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
     .categorie-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:7px;margin-top:8px}
-    .categorie-btn{
-      border:1px solid #d1d1d1;
-      background:linear-gradient(180deg,#fff,#f7f7f7);
-      border-radius:12px;
-      padding:10px 6px;
-      font-size:13px;
-      font-weight:bold;
-      cursor:pointer;
-      box-shadow:0 4px 12px rgba(0,0,0,.05);
-    }
+    .categorie-btn{border:1px solid #d1d1d1;background:linear-gradient(180deg,#fff,#f7f7f7);border-radius:12px;padding:10px 6px;font-size:13px;font-weight:bold;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,.05)}
     .categorie-btn:hover{border-color:#19a65a;box-shadow:0 6px 16px rgba(0,0,0,.08),0 0 12px rgba(25,166,90,.12);transform:translateY(-1px)}
     .categorie-btn.active{background:linear-gradient(135deg,#111,#242424);color:white;border-color:#111;box-shadow:0 8px 18px rgba(0,0,0,.18),0 0 14px rgba(25,166,90,.22)}
     .product-select-wrap{margin-top:8px}
-    .card{
-      background:linear-gradient(180deg,#fafafa,#f3f3f3);
-      border-radius:15px;
-      padding:11px;
-      margin-top:10px;
-      border-left:5px solid #111;
-      line-height:1.35;
-      font-size:14px;
-      animation:cardIn .34s cubic-bezier(.22,1,.36,1) both;
-      transition:transform .22s ease,box-shadow .22s ease,opacity .22s ease,border-color .22s ease;
-      box-shadow:0 4px 14px rgba(0,0,0,.06);
-    }
+    .card{background:linear-gradient(180deg,#fafafa,#f3f3f3);border-radius:15px;padding:11px;margin-top:10px;border-left:5px solid #111;line-height:1.35;font-size:14px;animation:cardIn .34s cubic-bezier(.22,1,.36,1) both;transition:transform .22s ease,box-shadow .22s ease,opacity .22s ease,border-color .22s ease;box-shadow:0 4px 14px rgba(0,0,0,.06)}
     .card:hover{transform:translateY(-2px);box-shadow:0 9px 22px rgba(0,0,0,.1),0 0 12px rgba(25,166,90,.08)}
     @keyframes cardIn{from{opacity:0;transform:translateY(10px) scale(.99)}to{opacity:1;transform:translateY(0) scale(1)}}
     .card.klaar{border-left-color:#138a36;opacity:.88;box-shadow:0 6px 18px rgba(19,138,54,.12)}
     .card strong{display:block;font-size:16px;margin-bottom:3px}
     .muted{color:#666;font-size:13px;margin:4px 0 8px 0}
-    .delete-btn,.done-btn,.undo-btn{
-      margin-top:8px;
-      padding:8px 10px;
-      border:none;
-      border-radius:10px;
-      color:white;
-      cursor:pointer;
-      font-size:13px;
-      box-shadow:0 4px 10px rgba(0,0,0,.12);
-    }
+    .delete-btn,.done-btn,.undo-btn{margin-top:8px;padding:8px 10px;border:none;border-radius:10px;color:white;cursor:pointer;font-size:13px;box-shadow:0 4px 10px rgba(0,0,0,.12)}
     .delete-btn{background:linear-gradient(135deg,#b90000,#d70000)}
     .done-btn{background:linear-gradient(135deg,#138a36,#18a64c);margin-right:6px}
     .undo-btn{background:linear-gradient(135deg,#444,#666);margin-right:6px}
-    .bottom-nav{
-      position:fixed;
-      bottom:0;
-      left:0;
-      right:0;
-      background:rgba(255,255,255,.88);
-      backdrop-filter:blur(16px);
-      border-top:1px solid rgba(0,0,0,.08);
-      display:grid;
-      grid-template-columns:repeat(4,1fr);
-      gap:5px;
-      padding:7px;
-      padding-bottom:calc(7px + env(safe-area-inset-bottom));
-      z-index:50;
-      box-shadow:0 -8px 28px rgba(0,0,0,.12);
-    }
-    .bottom-nav button{
-      border:1px solid #d2d2d2;
-      background:linear-gradient(180deg,#fff,#f3f3f3);
-      border-radius:13px;
-      padding:8px 4px;
-      font-size:11px;
-      font-weight:bold;
-      color:#111;
-      cursor:pointer;
-      min-height:44px;
-      box-shadow:0 3px 10px rgba(0,0,0,.05);
-    }
-    .bottom-nav button.active{
-      background:linear-gradient(135deg,#111,#242424);
-      color:white;
-      border-color:#111;
-      transform:translateY(-3px);
-      box-shadow:0 8px 18px rgba(0,0,0,.22),0 0 16px rgba(25,166,90,.18);
-    }
+    .bottom-nav{position:fixed;bottom:0;left:0;right:0;background:rgba(255,255,255,.88);backdrop-filter:blur(16px);border-top:1px solid rgba(0,0,0,.08);display:grid;grid-template-columns:repeat(4,1fr);gap:5px;padding:7px;padding-bottom:calc(7px + env(safe-area-inset-bottom));z-index:50;box-shadow:0 -8px 28px rgba(0,0,0,.12)}
+    .bottom-nav button{border:1px solid #d2d2d2;background:linear-gradient(180deg,#fff,#f3f3f3);border-radius:13px;padding:8px 4px;font-size:11px;font-weight:bold;color:#111;cursor:pointer;min-height:44px;box-shadow:0 3px 10px rgba(0,0,0,.05)}
+    .bottom-nav button.active{background:linear-gradient(135deg,#111,#242424);color:white;border-color:#111;transform:translateY(-3px);box-shadow:0 8px 18px rgba(0,0,0,.22),0 0 16px rgba(25,166,90,.18)}
     .stat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:8px}
-    .stat{
-      background:linear-gradient(180deg,#fff,#f6f6f6);
-      border-radius:15px;
-      padding:10px;
-      border:1px solid #ddd;
-      font-size:13px;
-      animation:cardIn .34s cubic-bezier(.22,1,.36,1) both;
-      box-shadow:0 5px 15px rgba(0,0,0,.06);
-    }
+    .stat{background:linear-gradient(180deg,#fff,#f6f6f6);border-radius:15px;padding:10px;border:1px solid #ddd;font-size:13px;animation:cardIn .34s cubic-bezier(.22,1,.36,1) both;box-shadow:0 5px 15px rgba(0,0,0,.06)}
     .stat strong{display:block;font-size:20px;margin-top:3px}
     @media(min-width:800px){.bottom-nav{grid-template-columns:repeat(8,1fr)}}
     @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
@@ -232,7 +77,6 @@
 
   <section id="vandaag" class="active">
     <h2>Vandaag gemaakt</h2>
-
     <details class="accordion">
       <summary>Nieuw product toevoegen</summary>
       <div class="accordion-content">
@@ -243,7 +87,6 @@
         <button class="secondary-btn" onclick="voegNieuwProductToe('vandaag')">Product toevoegen</button>
       </div>
     </details>
-
     <details class="accordion">
       <summary>Kies product</summary>
       <div class="accordion-content">
@@ -255,7 +98,6 @@
         </div>
       </div>
     </details>
-
     <label>Aantal gemaakt</label>
     <input id="vandaagAantal" type="number" min="0">
     <label>Medewerker</label>
@@ -268,7 +110,6 @@
 
   <section id="avond">
     <h2>Te maken vanavond</h2>
-
     <details class="accordion">
       <summary>Nieuw product toevoegen</summary>
       <div class="accordion-content">
@@ -279,7 +120,6 @@
         <button class="secondary-btn" onclick="voegNieuwProductToe('avond')">Product toevoegen</button>
       </div>
     </details>
-
     <details class="accordion">
       <summary>Kies product</summary>
       <div class="accordion-content">
@@ -291,7 +131,6 @@
         </div>
       </div>
     </details>
-
     <label>Aantal te maken</label>
     <input id="avondAantal" type="number" min="0">
     <button class="save-btn" onclick="slaAvondplanningOp()">Opslaan</button>
@@ -300,7 +139,6 @@
 
   <section id="koellades">
     <h2>Voorraad koellades</h2>
-
     <details class="accordion">
       <summary>Nieuw product toevoegen</summary>
       <div class="accordion-content">
@@ -311,7 +149,6 @@
         <button class="secondary-btn" onclick="voegNieuwProductToe('koellades')">Product toevoegen</button>
       </div>
     </details>
-
     <details class="accordion">
       <summary>Kies product</summary>
       <div class="accordion-content">
@@ -323,7 +160,6 @@
         </div>
       </div>
     </details>
-
     <label>Aantal</label>
     <input id="koelladesAantal" type="number" min="0">
     <label>Productiedatum</label>
@@ -338,34 +174,27 @@
 
   <section id="koelcellen">
     <h2>Voorraad koelcellen</h2>
-
     <details class="accordion">
-      <summary>Nieuw product toevoegen</summary>
+      <summary>Nieuw voorraadproduct toevoegen</summary>
       <div class="accordion-content">
         <label>Nieuwe productnaam</label>
         <input id="nieuwProductNaam_koelcellen" placeholder="Bijv. Bak wraps kip">
-        <label>Categorie</label>
-        <select id="nieuwProductCategorie_koelcellen"></select>
+        <p class="muted">Categorie wordt automatisch: Voorraad te maken.</p>
         <button class="secondary-btn" onclick="voegNieuwProductToe('koelcellen')">Product toevoegen</button>
       </div>
     </details>
-
     <details class="accordion">
       <summary>Kies product</summary>
       <div class="accordion-content">
-        <label>Categorie</label>
-        <div id="categorieButtons_koelcellen" class="categorie-grid"></div>
+        <p class="muted">Alleen producten uit de categorie “Voorraad te maken” worden hier getoond.</p>
         <div class="product-select-wrap">
           <label>Product</label>
           <select id="koelcellenProduct"></select>
         </div>
       </div>
     </details>
-
     <label>Aantal</label>
     <input id="koelcellenAantal" type="number" min="0">
-    <label>Productiedatum</label>
-    <input id="koelcellenProductiedatum" type="date">
     <label>THT-datum</label>
     <input id="koelcellenTht" type="date">
     <label>Locatie</label>
@@ -376,7 +205,6 @@
 
   <section id="verkoop">
     <h2>Verkoop & Derving</h2>
-
     <details class="accordion">
       <summary>Nieuw product toevoegen</summary>
       <div class="accordion-content">
@@ -387,7 +215,6 @@
         <button class="secondary-btn" onclick="voegNieuwProductToe('verkoop')">Product toevoegen</button>
       </div>
     </details>
-
     <details class="accordion">
       <summary>Kies product</summary>
       <div class="accordion-content">
@@ -399,7 +226,6 @@
         </div>
       </div>
     </details>
-
     <p class="muted">Kies een product en vul alleen de derving in. Verkocht wordt berekend als: gemaakt - derving.</p>
     <label>Aantal derving</label>
     <input id="verkoopDerving" type="number" min="0">
@@ -443,7 +269,7 @@
   const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
   const categorieen = ["Broodjes","Maaltijdcomponenten","Pinsa","Salades","Voorraad te maken","Wraps"];
-  const menus = ["vandaag","avond","koellades","koelcellen","verkoop"];
+  const menus = ["vandaag","avond","koellades","verkoop"];
   const productSelectIds = {
     vandaag: "vandaagProduct",
     avond: "avondProduct",
@@ -479,7 +305,7 @@
   }
 
   function vulCategorieDropdowns(){
-    const ids=["nieuwProductCategorie_vandaag","nieuwProductCategorie_avond","nieuwProductCategorie_koellades","nieuwProductCategorie_koelcellen","nieuwProductCategorie_verkoop"];
+    const ids=["nieuwProductCategorie_vandaag","nieuwProductCategorie_avond","nieuwProductCategorie_koellades","nieuwProductCategorie_verkoop"];
     ids.forEach(id=>{
       const select=document.getElementById(id);
       if(!select)return;
@@ -521,6 +347,7 @@
       const categorie=gekozenCategoriePerMenu[menu];
       vulProductDropdownVoorMenu(menu,categorie);
     });
+    vulProductDropdownVoorMenu("koelcellen","Voorraad te maken");
     vulCategorieKnoppen();
   }
 
@@ -569,9 +396,16 @@
 
   async function voegNieuwProductToe(menu){
     const naamInput=document.getElementById("nieuwProductNaam_"+menu);
-    const categorieSelect=document.getElementById("nieuwProductCategorie_"+menu);
     const naam=naamInput.value.trim();
-    const categorie=categorieSelect.value;
+    let categorie;
+
+    if(menu==="koelcellen"){
+      categorie="Voorraad te maken";
+    } else {
+      const categorieSelect=document.getElementById("nieuwProductCategorie_"+menu);
+      categorie=categorieSelect.value;
+    }
+
     if(!naam){alert("Vul eerst een productnaam in.");return}
 
     const {error}=await db.from("producten_makerij").insert({naam,categorie,actief:true});
@@ -583,8 +417,11 @@
     }
 
     naamInput.value="";
-    categorieSelect.selectedIndex=0;
-    gekozenCategoriePerMenu[menu]=categorie;
+    if(menu!=="koelcellen"){
+      document.getElementById("nieuwProductCategorie_"+menu).selectedIndex=0;
+      gekozenCategoriePerMenu[menu]=categorie;
+    }
+
     await laadAlles();
     alert("Product toegevoegd.");
   }
@@ -625,7 +462,6 @@
     const medewerker=document.getElementById("vandaagMedewerker").value;
     const opmerking=document.getElementById("vandaagOpmerking").value;
     if(!productId||aantal<=0){alert("Kies een product en vul een aantal in.");return}
-
     const {error}=await db.from("productie").insert({product_id:Number(productId),aantal,medewerker,opmerking});
     if(error){console.error("Productie opslaan fout:",error);alert("Productie opslaan mislukt: "+error.message);return}
     clearFields("vandaag");
@@ -636,7 +472,6 @@
     const productId=document.getElementById("avondProduct").value;
     const aantal=Number(document.getElementById("avondAantal").value||0);
     if(!productId||aantal<=0){alert("Kies een product en vul een aantal in.");return}
-
     const {error}=await db.from("avondplanning").insert({product_id:Number(productId),aantal,prioriteit:null,status:"Nog doen",opmerking:null});
     if(error){console.error("Avondplanning opslaan fout:",error);alert("Avondplanning opslaan mislukt: "+error.message);return}
     clearFields("avond");
@@ -654,7 +489,6 @@
     const productId=document.getElementById("koelladesProduct").value;
     const aantal=Number(document.getElementById("koelladesAantal").value||0);
     if(!productId||aantal<=0){alert("Kies een product en vul een aantal in.");return}
-
     const {error}=await db.from("voorraad_koellades").insert({
       product_id:Number(productId),
       aantal,
@@ -671,11 +505,10 @@
     const productId=document.getElementById("koelcellenProduct").value;
     const aantal=Number(document.getElementById("koelcellenAantal").value||0);
     if(!productId||aantal<=0){alert("Kies een product en vul een aantal in.");return}
-
     const {error}=await db.from("voorraad_koelcellen").insert({
       product_id:Number(productId),
       aantal,
-      productiedatum:document.getElementById("koelcellenProductiedatum").value||null,
+      productiedatum:null,
       tht_datum:document.getElementById("koelcellenTht").value||null,
       locatie:document.getElementById("koelcellenLocatie").value
     });
@@ -688,7 +521,6 @@
     const productId=document.getElementById("verkoopProduct").value;
     const aantal=Number(document.getElementById("verkoopDerving").value||0);
     if(!productId||aantal<0){alert("Kies een product en vul derving in.");return}
-
     const {error}=await db.from("derving").insert({product_id:Number(productId),aantal});
     if(error){console.error("Derving opslaan fout:",error);alert("Derving opslaan mislukt: "+error.message);return}
     clearFields("verkoop");
@@ -724,18 +556,9 @@
     const dervingPercentage=gemaakt>0?Math.round((derving/gemaakt)*100):0;
     let advies="Geen productie gevonden";
     let analyse="Nog geen analyse mogelijk.";
-
-    if(gemaakt>0&&dervingPercentage<=5){
-      advies="Meer of gelijk produceren";
-      analyse="Sterk product: lage derving en goede verkoop.";
-    }else if(gemaakt>0&&dervingPercentage<=15){
-      advies="Gelijk houden";
-      analyse="Redelijk stabiel product. Houd de aantallen voorlopig gelijk.";
-    }else if(gemaakt>0){
-      advies="Minder produceren";
-      analyse="Aandachtspunt: relatief veel derving. Verlaag productie of verkoop eerder op de dag actief uit.";
-    }
-
+    if(gemaakt>0&&dervingPercentage<=5){advies="Meer of gelijk produceren";analyse="Sterk product: lage derving en goede verkoop."}
+    else if(gemaakt>0&&dervingPercentage<=15){advies="Gelijk houden";analyse="Redelijk stabiel product. Houd de aantallen voorlopig gelijk."}
+    else if(gemaakt>0){advies="Minder produceren";analyse="Aandachtspunt: relatief veel derving. Verlaag productie of verkoop eerder op de dag actief uit."}
     return{gemaakt,derving,verkocht,verkoopPercentage,dervingPercentage,advies,analyse};
   }
 
@@ -776,12 +599,9 @@
           Aantal te maken: ${item.aantal}<br>
           Status: ${klaar?"Klaar":"Nog doen"}<br>
           <span class="muted">${item.datum||"-"}</span><br>
-          <button class="${klaar?"undo-btn":"done-btn"}" onclick="toggleAvondKlaar(${item.id}, '${item.status||"Nog doen"}')">
-            ${klaar?"Terug naar nog doen":"Afvinken als klaar"}
-          </button>
+          <button class="${klaar?"undo-btn":"done-btn"}" onclick="toggleAvondKlaar(${item.id}, '${item.status||"Nog doen"}')">${klaar?"Terug naar nog doen":"Afvinken als klaar"}</button>
           <button class="delete-btn" onclick="verwijderRij('avondplanning', ${item.id})">Verwijderen</button>
-        </div>
-      `;
+        </div>`;
     }).join("");
   }
 
@@ -807,7 +627,6 @@
       <div class="card">
         <strong>${productNaam(item.product_id)}</strong>
         Aantal: ${item.aantal}<br>
-        Productiedatum: ${item.productiedatum||"-"}<br>
         THT: ${item.tht_datum||"-"}<br>
         Locatie: ${item.locatie||"-"}<br>
         <button class="delete-btn" onclick="verwijderRij('voorraad_koelcellen', ${item.id})">Verwijderen</button>
@@ -838,7 +657,6 @@
     const totaalProductie=productieVandaag.reduce((sum,item)=>sum+Number(item.aantal||0),0);
     const totaalAvond=avondVandaag.reduce((sum,item)=>sum+Number(item.aantal||0),0);
     const totaalDervingVandaag=dervingVandaag.reduce((sum,item)=>sum+Number(item.aantal||0),0);
-
     el.innerHTML=`
       <div class="stat-grid">
         <div class="stat">Gemaakt vandaag<strong>${totaalProductie}</strong></div>
@@ -846,27 +664,12 @@
         <div class="stat">Avond totaal<strong>${totaalAvond}</strong></div>
         <div class="stat">Avond klaar<strong>${avondKlaar.length}/${avondVandaag.length}</strong></div>
       </div>
-
       <h3>Avond nog doen</h3>
-      ${
-        avondNogDoen.length===0
-        ?`<p class="muted">Alles is afgevinkt of er staat niets gepland.</p>`
-        :avondNogDoen.map(item=>`<div class="card"><strong>${productNaam(item.product_id)}</strong>${item.aantal} stuks nog maken</div>`).join("")
-      }
-
+      ${avondNogDoen.length===0?`<p class="muted">Alles is afgevinkt of er staat niets gepland.</p>`:avondNogDoen.map(item=>`<div class="card"><strong>${productNaam(item.product_id)}</strong>${item.aantal} stuks nog maken</div>`).join("")}
       <h3>Productie vandaag</h3>
-      ${
-        productieVandaag.length===0
-        ?`<p class="muted">Nog geen productie vandaag.</p>`
-        :productieVandaag.map(item=>`<div class="card"><strong>${productNaam(item.product_id)}</strong>${item.aantal} stuks gemaakt<br>Medewerker: ${item.medewerker||"-"}</div>`).join("")
-      }
-
+      ${productieVandaag.length===0?`<p class="muted">Nog geen productie vandaag.</p>`:productieVandaag.map(item=>`<div class="card"><strong>${productNaam(item.product_id)}</strong>${item.aantal} stuks gemaakt<br>Medewerker: ${item.medewerker||"-"}</div>`).join("")}
       <h3>Derving vandaag</h3>
-      ${
-        dervingVandaag.length===0
-        ?`<p class="muted">Nog geen derving vandaag.</p>`
-        :dervingVandaag.map(item=>`<div class="card"><strong>${productNaam(item.product_id)}</strong>${item.aantal} stuks derving</div>`).join("")
-      }
+      ${dervingVandaag.length===0?`<p class="muted">Nog geen derving vandaag.</p>`:dervingVandaag.map(item=>`<div class="card"><strong>${productNaam(item.product_id)}</strong>${item.aantal} stuks derving</div>`).join("")}
     `;
   }
 
@@ -890,12 +693,10 @@
     const el=document.getElementById("analyseContent");
     const productenMetData=producten.map(product=>({...product,...cijfersVoorProduct(product.id)})).filter(product=>product.gemaakt>0||product.derving>0).sort((a,b)=>b.dervingPercentage-a.dervingPercentage);
     if(productenMetData.length===0){el.innerHTML=`<p class="muted">Nog geen analyse beschikbaar.</p>`;return}
-
     const totaalGemaaktAlles=productenMetData.reduce((sum,p)=>sum+p.gemaakt,0);
     const totaalDervingAlles=productenMetData.reduce((sum,p)=>sum+p.derving,0);
     const totaalVerkochtAlles=productenMetData.reduce((sum,p)=>sum+p.verkocht,0);
     const totaalDervingPercentage=totaalGemaaktAlles>0?Math.round((totaalDervingAlles/totaalGemaaktAlles)*100):0;
-
     el.innerHTML=`
       <div class="stat-grid">
         <div class="stat">Totaal gemaakt<strong>${totaalGemaaktAlles}</strong></div>
@@ -903,19 +704,16 @@
         <div class="stat">Totaal derving<strong>${totaalDervingAlles}</strong></div>
         <div class="stat">Derving %<strong>${totaalDervingPercentage}%</strong></div>
       </div>
-
       <h3>Aandachtspunten</h3>
-      ${
-        productenMetData.map(product=>`
-          <div class="card">
-            <strong>${product.naam}</strong>
-            ${product.analyse}<br>
-            Verkooppercentage: ${product.verkoopPercentage}%<br>
-            Dervingspercentage: ${product.dervingPercentage}%<br>
-            Advies: ${product.advies}
-          </div>
-        `).join("")
-      }
+      ${productenMetData.map(product=>`
+        <div class="card">
+          <strong>${product.naam}</strong>
+          ${product.analyse}<br>
+          Verkooppercentage: ${product.verkoopPercentage}%<br>
+          Dervingspercentage: ${product.dervingPercentage}%<br>
+          Advies: ${product.advies}
+        </div>
+      `).join("")}
     `;
   }
 
