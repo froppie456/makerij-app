@@ -4,379 +4,69 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>Makerij App</title>
-
   <meta name="theme-color" content="#111111">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="Makerij">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
-
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
-    * {
-      box-sizing: border-box;
-      font-family: Arial, sans-serif;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    html {
-      scroll-behavior: smooth;
-    }
-
-    body {
-      margin: 0;
-      background: #f4f4f4;
-      color: #111;
-      padding-bottom: 88px;
-      animation: pageFadeIn 0.35s ease;
-    }
-
-    @keyframes pageFadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
-
-    header {
-      background: #111;
-      color: white;
-      padding: 14px;
-      text-align: center;
-      position: sticky;
-      top: 0;
-      z-index: 20;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.18);
-    }
-
-    header h1 {
-      margin: 0;
-      font-size: 19px;
-      letter-spacing: 0.2px;
-    }
-
-    main {
-      padding: 10px;
-      max-width: 900px;
-      margin: auto;
-    }
-
-    section {
-      display: none;
-      background: white;
-      padding: 12px;
-      border-radius: 14px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-      margin-bottom: 12px;
-    }
-
-    section.active {
-      display: block;
-      animation: sectionIn 0.28s ease both;
-    }
-
-    @keyframes sectionIn {
-      from {
-        opacity: 0;
-        transform: translateY(10px) scale(0.99);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-      }
-    }
-
-    h2 {
-      margin: 0 0 8px 0;
-      font-size: 20px;
-    }
-
-    h3 {
-      margin: 8px 0;
-      font-size: 16px;
-    }
-
-    label {
-      display: block;
-      margin-top: 8px;
-      font-weight: bold;
-      font-size: 14px;
-    }
-
-    input, select, textarea {
-      width: 100%;
-      padding: 10px;
-      margin-top: 4px;
-      border: 1px solid #ccc;
-      border-radius: 10px;
-      font-size: 15px;
-      background: white;
-      transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease;
-    }
-
-    input:focus, select:focus, textarea:focus {
-      outline: none;
-      border-color: #111;
-      box-shadow: 0 0 0 3px rgba(0,0,0,0.08);
-    }
-
-    textarea {
-      min-height: 56px;
-      resize: vertical;
-    }
-
-    button {
-      transition: transform 0.16s ease, box-shadow 0.16s ease, background 0.16s ease, opacity 0.16s ease;
-    }
-
-    button:active {
-      transform: scale(0.97);
-    }
-
-    .save-btn, .secondary-btn, .refresh-btn {
-      width: 100%;
-      margin-top: 10px;
-      padding: 12px;
-      border-radius: 12px;
-      font-size: 15px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-
-    .save-btn {
-      border: none;
-      background: #111;
-      color: white;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.14);
-    }
-
-    .save-btn:hover {
-      box-shadow: 0 6px 14px rgba(0,0,0,0.18);
-    }
-
-    .secondary-btn, .refresh-btn {
-      border: 2px solid #111;
-      background: white;
-      color: #111;
-    }
-
-    .secondary-btn:hover, .refresh-btn:hover {
-      background: #f2f2f2;
-    }
-
-    .refresh-btn {
-      margin-bottom: 10px;
-    }
-
-    .accordion {
-      background: #f7f7f7;
-      border-radius: 12px;
-      border: 1px solid #ddd;
-      margin-bottom: 10px;
-      overflow: hidden;
-      transition: box-shadow 0.22s ease, transform 0.22s ease;
-    }
-
-    .accordion[open] {
-      box-shadow: 0 3px 10px rgba(0,0,0,0.08);
-    }
-
-    .accordion summary {
-      cursor: pointer;
-      padding: 11px 12px;
-      font-weight: bold;
-      list-style: none;
-      user-select: none;
-    }
-
-    .accordion summary::-webkit-details-marker {
-      display: none;
-    }
-
-    .accordion summary::after {
-      content: "+";
-      float: right;
-      font-weight: bold;
-      transition: transform 0.22s ease;
-    }
-
-    .accordion[open] summary::after {
-      content: "–";
-      transform: rotate(180deg);
-    }
-
-    .accordion-content {
-      padding: 0 12px 12px 12px;
-      border-top: 1px solid #ddd;
-      animation: accordionIn 0.25s ease both;
-    }
-
-    @keyframes accordionIn {
-      from {
-        opacity: 0;
-        transform: translateY(-6px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    .card {
-      background: #f7f7f7;
-      border-radius: 12px;
-      padding: 10px;
-      margin-top: 10px;
-      border-left: 5px solid #111;
-      line-height: 1.35;
-      font-size: 14px;
-      animation: cardIn 0.28s ease both;
-      transition: transform 0.18s ease, box-shadow 0.18s ease, opacity 0.18s ease;
-    }
-
-    .card:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-    }
-
-    @keyframes cardIn {
-      from {
-        opacity: 0;
-        transform: translateY(8px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    .card.klaar {
-      border-left-color: #138a36;
-      opacity: 0.82;
-    }
-
-    .card strong {
-      display: block;
-      font-size: 16px;
-      margin-bottom: 3px;
-    }
-
-    .muted {
-      color: #666;
-      font-size: 13px;
-      margin: 4px 0 8px 0;
-    }
-
-    .delete-btn {
-      margin-top: 8px;
-      padding: 8px 10px;
-      border: none;
-      border-radius: 8px;
-      background: #c40000;
-      color: white;
-      cursor: pointer;
-      font-size: 13px;
-    }
-
-    .done-btn {
-      margin-top: 8px;
-      margin-right: 6px;
-      padding: 8px 10px;
-      border: none;
-      border-radius: 8px;
-      background: #138a36;
-      color: white;
-      cursor: pointer;
-      font-size: 13px;
-    }
-
-    .undo-btn {
-      margin-top: 8px;
-      margin-right: 6px;
-      padding: 8px 10px;
-      border: none;
-      border-radius: 8px;
-      background: #555;
-      color: white;
-      cursor: pointer;
-      font-size: 13px;
-    }
-
-    .bottom-nav {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      background: rgba(255,255,255,0.96);
-      backdrop-filter: blur(10px);
-      border-top: 1px solid #ddd;
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 5px;
-      padding: 7px;
-      padding-bottom: calc(7px + env(safe-area-inset-bottom));
-      z-index: 50;
-      box-shadow: 0 -2px 10px rgba(0,0,0,0.08);
-    }
-
-    .bottom-nav button {
-      border: 1px solid #ccc;
-      background: #f7f7f7;
-      border-radius: 11px;
-      padding: 8px 4px;
-      font-size: 11px;
-      font-weight: bold;
-      color: #111;
-      cursor: pointer;
-      min-height: 44px;
-    }
-
-    .bottom-nav button.active {
-      background: #111;
-      color: white;
-      border-color: #111;
-      transform: translateY(-2px);
-      box-shadow: 0 4px 10px rgba(0,0,0,0.18);
-    }
-
-    .stat-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 8px;
-      margin-top: 8px;
-    }
-
-    .stat {
-      background: #f7f7f7;
-      border-radius: 12px;
-      padding: 10px;
-      border: 1px solid #ddd;
-      font-size: 13px;
-      animation: cardIn 0.28s ease both;
-    }
-
-    .stat strong {
-      display: block;
-      font-size: 20px;
-      margin-top: 3px;
-    }
-
-    @media (min-width: 800px) {
-      .bottom-nav { grid-template-columns: repeat(8, 1fr); }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      * {
-        animation: none !important;
-        transition: none !important;
-        scroll-behavior: auto !important;
-      }
-    }
+    *{box-sizing:border-box;font-family:Arial,sans-serif;-webkit-tap-highlight-color:transparent}
+    html{scroll-behavior:smooth}
+    body{margin:0;background:#f4f4f4;color:#111;padding-bottom:88px;animation:pageFadeIn .35s ease}
+    @keyframes pageFadeIn{from{opacity:0}to{opacity:1}}
+    header{background:#111;color:white;padding:14px;text-align:center;position:sticky;top:0;z-index:20;box-shadow:0 2px 12px rgba(0,0,0,.18)}
+    header h1{margin:0;font-size:19px;letter-spacing:.2px}
+    main{padding:10px;max-width:900px;margin:auto}
+    section{display:none;background:white;padding:12px;border-radius:14px;box-shadow:0 2px 8px rgba(0,0,0,.08);margin-bottom:12px}
+    section.active{display:block;animation:sectionIn .28s ease both}
+    @keyframes sectionIn{from{opacity:0;transform:translateY(10px) scale(.99)}to{opacity:1;transform:translateY(0) scale(1)}}
+    h2{margin:0 0 8px 0;font-size:20px}
+    h3{margin:8px 0;font-size:16px}
+    label{display:block;margin-top:8px;font-weight:bold;font-size:14px}
+    input,select,textarea{width:100%;padding:10px;margin-top:4px;border:1px solid #ccc;border-radius:10px;font-size:15px;background:white;transition:border-color .2s ease,box-shadow .2s ease}
+    input:focus,select:focus,textarea:focus{outline:none;border-color:#111;box-shadow:0 0 0 3px rgba(0,0,0,.08)}
+    textarea{min-height:56px;resize:vertical}
+    button{transition:transform .16s ease,box-shadow .16s ease,background .16s ease,opacity .16s ease}
+    button:active{transform:scale(.97)}
+    .save-btn,.secondary-btn,.refresh-btn{width:100%;margin-top:10px;padding:12px;border-radius:12px;font-size:15px;font-weight:bold;cursor:pointer}
+    .save-btn{border:none;background:#111;color:white;box-shadow:0 4px 10px rgba(0,0,0,.14)}
+    .secondary-btn,.refresh-btn{border:2px solid #111;background:white;color:#111}
+    .refresh-btn{margin-bottom:10px}
+    .accordion{background:#f7f7f7;border-radius:12px;border:1px solid #ddd;margin-bottom:10px;overflow:hidden;transition:box-shadow .22s ease}
+    .accordion[open]{box-shadow:0 3px 10px rgba(0,0,0,.08)}
+    .accordion summary{cursor:pointer;padding:11px 12px;font-weight:bold;list-style:none;user-select:none}
+    .accordion summary::-webkit-details-marker{display:none}
+    .accordion summary::after{content:"+";float:right;font-weight:bold;transition:transform .22s ease}
+    .accordion[open] summary::after{content:"–";transform:rotate(180deg)}
+    .accordion-content{padding:0 12px 12px 12px;border-top:1px solid #ddd;animation:accordionIn .25s ease both}
+    @keyframes accordionIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+    .categorie-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:6px;margin-top:8px}
+    .categorie-btn{border:1px solid #ccc;background:white;border-radius:10px;padding:9px 6px;font-size:13px;font-weight:bold;cursor:pointer}
+    .categorie-btn.active{background:#111;color:white;border-color:#111}
+    .product-select-wrap{margin-top:8px}
+    .card{background:#f7f7f7;border-radius:12px;padding:10px;margin-top:10px;border-left:5px solid #111;line-height:1.35;font-size:14px;animation:cardIn .28s ease both;transition:transform .18s ease,box-shadow .18s ease,opacity .18s ease}
+    .card:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,.08)}
+    @keyframes cardIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+    .card.klaar{border-left-color:#138a36;opacity:.82}
+    .card strong{display:block;font-size:16px;margin-bottom:3px}
+    .muted{color:#666;font-size:13px;margin:4px 0 8px 0}
+    .delete-btn{margin-top:8px;padding:8px 10px;border:none;border-radius:8px;background:#c40000;color:white;cursor:pointer;font-size:13px}
+    .done-btn{margin-top:8px;margin-right:6px;padding:8px 10px;border:none;border-radius:8px;background:#138a36;color:white;cursor:pointer;font-size:13px}
+    .undo-btn{margin-top:8px;margin-right:6px;padding:8px 10px;border:none;border-radius:8px;background:#555;color:white;cursor:pointer;font-size:13px}
+    .bottom-nav{position:fixed;bottom:0;left:0;right:0;background:rgba(255,255,255,.96);backdrop-filter:blur(10px);border-top:1px solid #ddd;display:grid;grid-template-columns:repeat(4,1fr);gap:5px;padding:7px;padding-bottom:calc(7px + env(safe-area-inset-bottom));z-index:50;box-shadow:0 -2px 10px rgba(0,0,0,.08)}
+    .bottom-nav button{border:1px solid #ccc;background:#f7f7f7;border-radius:11px;padding:8px 4px;font-size:11px;font-weight:bold;color:#111;cursor:pointer;min-height:44px}
+    .bottom-nav button.active{background:#111;color:white;border-color:#111;transform:translateY(-2px);box-shadow:0 4px 10px rgba(0,0,0,.18)}
+    .stat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:8px}
+    .stat{background:#f7f7f7;border-radius:12px;padding:10px;border:1px solid #ddd;font-size:13px;animation:cardIn .28s ease both}
+    .stat strong{display:block;font-size:20px;margin-top:3px}
+    @media(min-width:800px){.bottom-nav{grid-template-columns:repeat(8,1fr)}}
+    @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
   </style>
 </head>
 
 <body>
-<header>
-  <h1>Makerij App</h1>
-</header>
+<header><h1>Makerij App</h1></header>
 
 <main>
   <button class="refresh-btn" onclick="laadAlles()">Vernieuwen</button>
@@ -395,18 +85,24 @@
       </div>
     </details>
 
-    <label>Product</label>
-    <select id="vandaagProduct"></select>
+    <details class="accordion">
+      <summary>Kies product</summary>
+      <div class="accordion-content">
+        <label>Categorie</label>
+        <div id="categorieButtons_vandaag" class="categorie-grid"></div>
+        <div class="product-select-wrap">
+          <label>Product</label>
+          <select id="vandaagProduct"></select>
+        </div>
+      </div>
+    </details>
 
     <label>Aantal gemaakt</label>
     <input id="vandaagAantal" type="number" min="0">
-
     <label>Medewerker</label>
     <input id="vandaagMedewerker" placeholder="Naam medewerker">
-
     <label>Opmerking</label>
     <textarea id="vandaagOpmerking"></textarea>
-
     <button class="save-btn" onclick="slaProductieOp()">Opslaan</button>
     <div id="vandaagList"></div>
   </section>
@@ -425,12 +121,20 @@
       </div>
     </details>
 
-    <label>Product</label>
-    <select id="avondProduct"></select>
+    <details class="accordion">
+      <summary>Kies product</summary>
+      <div class="accordion-content">
+        <label>Categorie</label>
+        <div id="categorieButtons_avond" class="categorie-grid"></div>
+        <div class="product-select-wrap">
+          <label>Product</label>
+          <select id="avondProduct"></select>
+        </div>
+      </div>
+    </details>
 
     <label>Aantal te maken</label>
     <input id="avondAantal" type="number" min="0">
-
     <button class="save-btn" onclick="slaAvondplanningOp()">Opslaan</button>
     <div id="avondList"></div>
   </section>
@@ -449,21 +153,26 @@
       </div>
     </details>
 
-    <label>Product</label>
-    <select id="koelladesProduct"></select>
+    <details class="accordion">
+      <summary>Kies product</summary>
+      <div class="accordion-content">
+        <label>Categorie</label>
+        <div id="categorieButtons_koellades" class="categorie-grid"></div>
+        <div class="product-select-wrap">
+          <label>Product</label>
+          <select id="koelladesProduct"></select>
+        </div>
+      </div>
+    </details>
 
     <label>Aantal</label>
     <input id="koelladesAantal" type="number" min="0">
-
     <label>Productiedatum</label>
     <input id="koelladesProductiedatum" type="date">
-
     <label>THT-datum</label>
     <input id="koelladesTht" type="date">
-
     <label>Locatie</label>
     <input id="koelladesLocatie" placeholder="Bijv. Koellade 1">
-
     <button class="save-btn" onclick="slaKoelladesOp()">Opslaan</button>
     <div id="koelladesList"></div>
   </section>
@@ -482,21 +191,26 @@
       </div>
     </details>
 
-    <label>Product</label>
-    <select id="koelcellenProduct"></select>
+    <details class="accordion">
+      <summary>Kies product</summary>
+      <div class="accordion-content">
+        <label>Categorie</label>
+        <div id="categorieButtons_koelcellen" class="categorie-grid"></div>
+        <div class="product-select-wrap">
+          <label>Product</label>
+          <select id="koelcellenProduct"></select>
+        </div>
+      </div>
+    </details>
 
     <label>Aantal</label>
     <input id="koelcellenAantal" type="number" min="0">
-
     <label>Productiedatum</label>
     <input id="koelcellenProductiedatum" type="date">
-
     <label>THT-datum</label>
     <input id="koelcellenTht" type="date">
-
     <label>Locatie</label>
     <input id="koelcellenLocatie" placeholder="Bijv. Koelcel boven / krat 3">
-
     <button class="save-btn" onclick="slaKoelcellenOp()">Opslaan</button>
     <div id="koelcellenList"></div>
   </section>
@@ -515,14 +229,21 @@
       </div>
     </details>
 
+    <details class="accordion">
+      <summary>Kies product</summary>
+      <div class="accordion-content">
+        <label>Categorie</label>
+        <div id="categorieButtons_verkoop" class="categorie-grid"></div>
+        <div class="product-select-wrap">
+          <label>Product</label>
+          <select id="verkoopProduct"></select>
+        </div>
+      </div>
+    </details>
+
     <p class="muted">Kies een product en vul alleen de derving in. Verkocht wordt berekend als: gemaakt - derving.</p>
-
-    <label>Product</label>
-    <select id="verkoopProduct"></select>
-
     <label>Aantal derving</label>
     <input id="verkoopDerving" type="number" min="0">
-
     <button class="save-btn" onclick="slaDervingOp()">Opslaan</button>
     <div id="verkoopList"></div>
   </section>
@@ -560,17 +281,17 @@
 <script>
   const SUPABASE_URL = "https://iifgmebfinlftozezyvs.supabase.co";
   const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlpZmdtZWJmaW5sZnRvemV6eXZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTAzNDY2OTYsImV4cCI6MjA2NTkyMjY5Nn0.VFMr45HrUxw2stkuaPw8V7nTwkHdL70JhoSiWbI5wKQ";
-
   const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-  const categorieen = [
-    "Broodjes",
-    "Maaltijdcomponenten",
-    "Pinsa",
-    "Salades",
-    "Voorraad te maken",
-    "Wraps"
-  ];
+  const categorieen = ["Broodjes","Maaltijdcomponenten","Pinsa","Salades","Voorraad te maken","Wraps"];
+  const menus = ["vandaag","avond","koellades","koelcellen","verkoop"];
+  const productSelectIds = {
+    vandaag: "vandaagProduct",
+    avond: "avondProduct",
+    koellades: "koelladesProduct",
+    koelcellen: "koelcellenProduct",
+    verkoop: "verkoopProduct"
+  };
 
   let producten = [];
   let productieData = [];
@@ -578,60 +299,99 @@
   let koelladesData = [];
   let koelcellenData = [];
   let dervingData = [];
+  let gekozenCategoriePerMenu = {};
 
-  function openTab(tabId) {
-    if (!tabId) return;
-
-    document.querySelectorAll("section").forEach(section => section.classList.remove("active"));
-    document.querySelectorAll(".bottom-nav button").forEach(button => button.classList.remove("active"));
-
+  function openTab(tabId){
+    if(!tabId)return;
+    document.querySelectorAll("section").forEach(section=>section.classList.remove("active"));
+    document.querySelectorAll(".bottom-nav button").forEach(button=>button.classList.remove("active"));
     document.getElementById(tabId).classList.add("active");
-
-    const navButton = document.getElementById("nav-" + tabId);
-    if (navButton) navButton.classList.add("active");
-
+    const navButton=document.getElementById("nav-"+tabId);
+    if(navButton)navButton.classList.add("active");
     renderAlles();
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    window.scrollTo({top:0,behavior:"smooth"});
   }
 
-  function vandaagDatum() {
-    return new Date().toISOString().split("T")[0];
+  function vandaagDatum(){return new Date().toISOString().split("T")[0]}
+  function isVandaag(datum){return datum===vandaagDatum()}
+  function productNaam(productId){
+    const product=producten.find(p=>String(p.id)===String(productId));
+    return product?product.naam:"Onbekend product";
   }
 
-  function isVandaag(datum) {
-    return datum === vandaagDatum();
-  }
-
-  function productNaam(productId) {
-    const product = producten.find(p => String(p.id) === String(productId));
-    return product ? product.naam : "Onbekend product";
-  }
-
-  function vulCategorieDropdowns() {
-    const ids = [
-      "nieuwProductCategorie_vandaag",
-      "nieuwProductCategorie_avond",
-      "nieuwProductCategorie_koellades",
-      "nieuwProductCategorie_koelcellen",
-      "nieuwProductCategorie_verkoop"
-    ];
-
-    ids.forEach(id => {
-      const select = document.getElementById(id);
-      if (!select) return;
-
-      select.innerHTML = "";
-
-      categorieen.forEach(categorie => {
-        const option = document.createElement("option");
-        option.value = categorie;
-        option.textContent = categorie;
+  function vulCategorieDropdowns(){
+    const ids=["nieuwProductCategorie_vandaag","nieuwProductCategorie_avond","nieuwProductCategorie_koellades","nieuwProductCategorie_koelcellen","nieuwProductCategorie_verkoop"];
+    ids.forEach(id=>{
+      const select=document.getElementById(id);
+      if(!select)return;
+      select.innerHTML="";
+      categorieen.forEach(categorie=>{
+        const option=document.createElement("option");
+        option.value=categorie;
+        option.textContent=categorie;
         select.appendChild(option);
       });
     });
   }
 
-  async function laadAlles() {
+  function vulCategorieKnoppen(){
+    menus.forEach(menu=>{
+      const container=document.getElementById("categorieButtons_"+menu);
+      if(!container)return;
+      container.innerHTML="";
+      categorieen.forEach(categorie=>{
+        const btn=document.createElement("button");
+        btn.type="button";
+        btn.className="categorie-btn";
+        if(gekozenCategoriePerMenu[menu]===categorie)btn.classList.add("active");
+        btn.textContent=categorie;
+        btn.onclick=function(){kiesCategorie(menu,categorie)};
+        container.appendChild(btn);
+      });
+    });
+  }
+
+  function kiesCategorie(menu,categorie){
+    gekozenCategoriePerMenu[menu]=categorie;
+    vulCategorieKnoppen();
+    vulProductDropdownVoorMenu(menu,categorie);
+  }
+
+  function vulProductDropdowns(){
+    menus.forEach(menu=>{
+      const categorie=gekozenCategoriePerMenu[menu];
+      vulProductDropdownVoorMenu(menu,categorie);
+    });
+    vulCategorieKnoppen();
+  }
+
+  function vulProductDropdownVoorMenu(menu,categorie){
+    const select=document.getElementById(productSelectIds[menu]);
+    if(!select)return;
+
+    if(!categorie){
+      select.innerHTML=`<option value="">Kies eerst een categorie</option>`;
+      return;
+    }
+
+    const productenInCategorie=producten.filter(product=>product.categorie===categorie);
+
+    select.innerHTML=`<option value="">Kies product uit ${categorie}</option>`;
+
+    if(productenInCategorie.length===0){
+      select.innerHTML=`<option value="">Geen producten in ${categorie}</option>`;
+      return;
+    }
+
+    productenInCategorie.forEach(product=>{
+      const option=document.createElement("option");
+      option.value=product.id;
+      option.textContent=product.naam;
+      select.appendChild(option);
+    });
+  }
+
+  async function laadAlles(){
     vulCategorieDropdowns();
     await laadProducten();
     await laadProductie();
@@ -642,369 +402,186 @@
     renderAlles();
   }
 
-  async function laadProducten() {
-    const { data, error } = await db
-      .from("producten_makerij")
-      .select("*")
-      .eq("actief", true)
-      .order("naam", { ascending: true });
-
-    if (error) {
-      console.error("Producten laden fout:", error);
-      alert("Producten laden mislukt: " + error.message);
-      return;
-    }
-
-    producten = data || [];
+  async function laadProducten(){
+    const {data,error}=await db.from("producten_makerij").select("*").eq("actief",true).order("naam",{ascending:true});
+    if(error){console.error("Producten laden fout:",error);alert("Producten laden mislukt: "+error.message);return}
+    producten=data||[];
     vulProductDropdowns();
   }
 
-  function vulProductDropdowns() {
-    const dropdowns = [
-      "vandaagProduct",
-      "avondProduct",
-      "koelladesProduct",
-      "koelcellenProduct",
-      "verkoopProduct"
-    ];
+  async function voegNieuwProductToe(menu){
+    const naamInput=document.getElementById("nieuwProductNaam_"+menu);
+    const categorieSelect=document.getElementById("nieuwProductCategorie_"+menu);
+    const naam=naamInput.value.trim();
+    const categorie=categorieSelect.value;
+    if(!naam){alert("Vul eerst een productnaam in.");return}
 
-    dropdowns.forEach(id => {
-      const select = document.getElementById(id);
-      if (!select) return;
-
-      select.innerHTML = `<option value="">Kies product</option>`;
-
-      producten.forEach(product => {
-        const option = document.createElement("option");
-        option.value = product.id;
-        option.textContent = product.naam;
-        select.appendChild(option);
-      });
-    });
-  }
-
-  async function voegNieuwProductToe(menu) {
-    const naamInput = document.getElementById("nieuwProductNaam_" + menu);
-    const categorieSelect = document.getElementById("nieuwProductCategorie_" + menu);
-
-    const naam = naamInput.value.trim();
-    const categorie = categorieSelect.value;
-
-    if (!naam) {
-      alert("Vul eerst een productnaam in.");
+    const {error}=await db.from("producten_makerij").insert({naam,categorie,actief:true});
+    if(error){
+      console.error("Product toevoegen fout:",error);
+      if(error.code==="23505"){alert("Dit product bestaat al.")}
+      else{alert("Product toevoegen mislukt: "+error.message)}
       return;
     }
 
-    const { error } = await db.from("producten_makerij").insert({
-      naam: naam,
-      categorie: categorie,
-      actief: true
-    });
-
-    if (error) {
-      console.error("Product toevoegen fout:", error);
-
-      if (error.code === "23505") {
-        alert("Dit product bestaat al.");
-      } else {
-        alert("Product toevoegen mislukt: " + error.message);
-      }
-
-      return;
-    }
-
-    naamInput.value = "";
-    categorieSelect.selectedIndex = 0;
-
+    naamInput.value="";
+    categorieSelect.selectedIndex=0;
+    gekozenCategoriePerMenu[menu]=categorie;
     await laadAlles();
     alert("Product toegevoegd.");
   }
 
-  async function laadProductie() {
-    const { data, error } = await db
-      .from("productie")
-      .select("*")
-      .order("created_at", { ascending: false });
-
-    if (error) {
-      console.error("Productie laden fout:", error);
-      alert("Productie laden mislukt: " + error.message);
-      return;
-    }
-
-    productieData = data || [];
+  async function laadProductie(){
+    const {data,error}=await db.from("productie").select("*").order("created_at",{ascending:false});
+    if(error){console.error("Productie laden fout:",error);alert("Productie laden mislukt: "+error.message);return}
+    productieData=data||[];
   }
 
-  async function laadAvondplanning() {
-    const { data, error } = await db
-      .from("avondplanning")
-      .select("*")
-      .order("created_at", { ascending: false });
-
-    if (error) {
-      console.error("Avondplanning laden fout:", error);
-      alert("Avondplanning laden mislukt: " + error.message);
-      return;
-    }
-
-    avondData = data || [];
+  async function laadAvondplanning(){
+    const {data,error}=await db.from("avondplanning").select("*").order("created_at",{ascending:false});
+    if(error){console.error("Avondplanning laden fout:",error);alert("Avondplanning laden mislukt: "+error.message);return}
+    avondData=data||[];
   }
 
-  async function laadKoellades() {
-    const { data, error } = await db
-      .from("voorraad_koellades")
-      .select("*")
-      .order("tht_datum", { ascending: true });
-
-    if (error) {
-      console.error("Koellades laden fout:", error);
-      alert("Koellades laden mislukt: " + error.message);
-      return;
-    }
-
-    koelladesData = data || [];
+  async function laadKoellades(){
+    const {data,error}=await db.from("voorraad_koellades").select("*").order("tht_datum",{ascending:true});
+    if(error){console.error("Koellades laden fout:",error);alert("Koellades laden mislukt: "+error.message);return}
+    koelladesData=data||[];
   }
 
-  async function laadKoelcellen() {
-    const { data, error } = await db
-      .from("voorraad_koelcellen")
-      .select("*")
-      .order("tht_datum", { ascending: true });
-
-    if (error) {
-      console.error("Koelcellen laden fout:", error);
-      alert("Koelcellen laden mislukt: " + error.message);
-      return;
-    }
-
-    koelcellenData = data || [];
+  async function laadKoelcellen(){
+    const {data,error}=await db.from("voorraad_koelcellen").select("*").order("tht_datum",{ascending:true});
+    if(error){console.error("Koelcellen laden fout:",error);alert("Koelcellen laden mislukt: "+error.message);return}
+    koelcellenData=data||[];
   }
 
-  async function laadDerving() {
-    const { data, error } = await db
-      .from("derving")
-      .select("*")
-      .order("created_at", { ascending: false });
-
-    if (error) {
-      console.error("Derving laden fout:", error);
-      alert("Derving laden mislukt: " + error.message);
-      return;
-    }
-
-    dervingData = data || [];
+  async function laadDerving(){
+    const {data,error}=await db.from("derving").select("*").order("created_at",{ascending:false});
+    if(error){console.error("Derving laden fout:",error);alert("Derving laden mislukt: "+error.message);return}
+    dervingData=data||[];
   }
 
-  async function slaProductieOp() {
-    const productId = document.getElementById("vandaagProduct").value;
-    const aantal = Number(document.getElementById("vandaagAantal").value || 0);
-    const medewerker = document.getElementById("vandaagMedewerker").value;
-    const opmerking = document.getElementById("vandaagOpmerking").value;
+  async function slaProductieOp(){
+    const productId=document.getElementById("vandaagProduct").value;
+    const aantal=Number(document.getElementById("vandaagAantal").value||0);
+    const medewerker=document.getElementById("vandaagMedewerker").value;
+    const opmerking=document.getElementById("vandaagOpmerking").value;
+    if(!productId||aantal<=0){alert("Kies een product en vul een aantal in.");return}
 
-    if (!productId || aantal <= 0) {
-      alert("Kies een product en vul een aantal in.");
-      return;
-    }
-
-    const { error } = await db.from("productie").insert({
-      product_id: Number(productId),
-      aantal,
-      medewerker,
-      opmerking
-    });
-
-    if (error) {
-      console.error("Productie opslaan fout:", error);
-      alert("Productie opslaan mislukt: " + error.message);
-      return;
-    }
-
+    const {error}=await db.from("productie").insert({product_id:Number(productId),aantal,medewerker,opmerking});
+    if(error){console.error("Productie opslaan fout:",error);alert("Productie opslaan mislukt: "+error.message);return}
     clearFields("vandaag");
     await laadAlles();
   }
 
-  async function slaAvondplanningOp() {
-    const productId = document.getElementById("avondProduct").value;
-    const aantal = Number(document.getElementById("avondAantal").value || 0);
+  async function slaAvondplanningOp(){
+    const productId=document.getElementById("avondProduct").value;
+    const aantal=Number(document.getElementById("avondAantal").value||0);
+    if(!productId||aantal<=0){alert("Kies een product en vul een aantal in.");return}
 
-    if (!productId || aantal <= 0) {
-      alert("Kies een product en vul een aantal in.");
-      return;
-    }
-
-    const { error } = await db.from("avondplanning").insert({
-      product_id: Number(productId),
-      aantal,
-      prioriteit: null,
-      status: "Nog doen",
-      opmerking: null
-    });
-
-    if (error) {
-      console.error("Avondplanning opslaan fout:", error);
-      alert("Avondplanning opslaan mislukt: " + error.message);
-      return;
-    }
-
+    const {error}=await db.from("avondplanning").insert({product_id:Number(productId),aantal,prioriteit:null,status:"Nog doen",opmerking:null});
+    if(error){console.error("Avondplanning opslaan fout:",error);alert("Avondplanning opslaan mislukt: "+error.message);return}
     clearFields("avond");
     await laadAlles();
   }
 
-  async function toggleAvondKlaar(id, huidigeStatus) {
-    const nieuweStatus = huidigeStatus === "Klaar" ? "Nog doen" : "Klaar";
-
-    const { error } = await db
-      .from("avondplanning")
-      .update({ status: nieuweStatus })
-      .eq("id", id);
-
-    if (error) {
-      console.error("Status aanpassen fout:", error);
-      alert("Status aanpassen mislukt: " + error.message);
-      return;
-    }
-
+  async function toggleAvondKlaar(id,huidigeStatus){
+    const nieuweStatus=huidigeStatus==="Klaar"?"Nog doen":"Klaar";
+    const {error}=await db.from("avondplanning").update({status:nieuweStatus}).eq("id",id);
+    if(error){console.error("Status aanpassen fout:",error);alert("Status aanpassen mislukt: "+error.message);return}
     await laadAlles();
   }
 
-  async function slaKoelladesOp() {
-    const productId = document.getElementById("koelladesProduct").value;
-    const aantal = Number(document.getElementById("koelladesAantal").value || 0);
+  async function slaKoelladesOp(){
+    const productId=document.getElementById("koelladesProduct").value;
+    const aantal=Number(document.getElementById("koelladesAantal").value||0);
+    if(!productId||aantal<=0){alert("Kies een product en vul een aantal in.");return}
 
-    if (!productId || aantal <= 0) {
-      alert("Kies een product en vul een aantal in.");
-      return;
-    }
-
-    const { error } = await db.from("voorraad_koellades").insert({
-      product_id: Number(productId),
+    const {error}=await db.from("voorraad_koellades").insert({
+      product_id:Number(productId),
       aantal,
-      productiedatum: document.getElementById("koelladesProductiedatum").value || null,
-      tht_datum: document.getElementById("koelladesTht").value || null,
-      locatie: document.getElementById("koelladesLocatie").value
+      productiedatum:document.getElementById("koelladesProductiedatum").value||null,
+      tht_datum:document.getElementById("koelladesTht").value||null,
+      locatie:document.getElementById("koelladesLocatie").value
     });
-
-    if (error) {
-      console.error("Koellades opslaan fout:", error);
-      alert("Koelladevoorraad opslaan mislukt: " + error.message);
-      return;
-    }
-
+    if(error){console.error("Koellades opslaan fout:",error);alert("Koelladevoorraad opslaan mislukt: "+error.message);return}
     clearFields("koellades");
     await laadAlles();
   }
 
-  async function slaKoelcellenOp() {
-    const productId = document.getElementById("koelcellenProduct").value;
-    const aantal = Number(document.getElementById("koelcellenAantal").value || 0);
+  async function slaKoelcellenOp(){
+    const productId=document.getElementById("koelcellenProduct").value;
+    const aantal=Number(document.getElementById("koelcellenAantal").value||0);
+    if(!productId||aantal<=0){alert("Kies een product en vul een aantal in.");return}
 
-    if (!productId || aantal <= 0) {
-      alert("Kies een product en vul een aantal in.");
-      return;
-    }
-
-    const { error } = await db.from("voorraad_koelcellen").insert({
-      product_id: Number(productId),
+    const {error}=await db.from("voorraad_koelcellen").insert({
+      product_id:Number(productId),
       aantal,
-      productiedatum: document.getElementById("koelcellenProductiedatum").value || null,
-      tht_datum: document.getElementById("koelcellenTht").value || null,
-      locatie: document.getElementById("koelcellenLocatie").value
+      productiedatum:document.getElementById("koelcellenProductiedatum").value||null,
+      tht_datum:document.getElementById("koelcellenTht").value||null,
+      locatie:document.getElementById("koelcellenLocatie").value
     });
-
-    if (error) {
-      console.error("Koelcellen opslaan fout:", error);
-      alert("Koelcelvoorraad opslaan mislukt: " + error.message);
-      return;
-    }
-
+    if(error){console.error("Koelcellen opslaan fout:",error);alert("Koelcelvoorraad opslaan mislukt: "+error.message);return}
     clearFields("koelcellen");
     await laadAlles();
   }
 
-  async function slaDervingOp() {
-    const productId = document.getElementById("verkoopProduct").value;
-    const aantal = Number(document.getElementById("verkoopDerving").value || 0);
+  async function slaDervingOp(){
+    const productId=document.getElementById("verkoopProduct").value;
+    const aantal=Number(document.getElementById("verkoopDerving").value||0);
+    if(!productId||aantal<0){alert("Kies een product en vul derving in.");return}
 
-    if (!productId || aantal < 0) {
-      alert("Kies een product en vul derving in.");
-      return;
-    }
-
-    const { error } = await db.from("derving").insert({
-      product_id: Number(productId),
-      aantal
-    });
-
-    if (error) {
-      console.error("Derving opslaan fout:", error);
-      alert("Derving opslaan mislukt: " + error.message);
-      return;
-    }
-
+    const {error}=await db.from("derving").insert({product_id:Number(productId),aantal});
+    if(error){console.error("Derving opslaan fout:",error);alert("Derving opslaan mislukt: "+error.message);return}
     clearFields("verkoop");
     await laadAlles();
   }
 
-  async function verwijderRij(tabel, id) {
-    const { error } = await db
-      .from(tabel)
-      .delete()
-      .eq("id", id);
-
-    if (error) {
-      console.error("Verwijderen fout:", error);
-      alert("Verwijderen mislukt: " + error.message);
-      return;
-    }
-
+  async function verwijderRij(tabel,id){
+    const {error}=await db.from(tabel).delete().eq("id",id);
+    if(error){console.error("Verwijderen fout:",error);alert("Verwijderen mislukt: "+error.message);return}
     await laadAlles();
   }
 
-  function clearFields(sectionId) {
-    const fields = document.querySelectorAll(`#${sectionId} input, #${sectionId} textarea`);
-    fields.forEach(field => field.value = "");
-
-    const selects = document.querySelectorAll(`#${sectionId} select`);
-    selects.forEach(select => select.selectedIndex = 0);
+  function clearFields(sectionId){
+    const fields=document.querySelectorAll(`#${sectionId} input, #${sectionId} textarea`);
+    fields.forEach(field=>field.value="");
+    const selects=document.querySelectorAll(`#${sectionId} select`);
+    selects.forEach(select=>select.selectedIndex=0);
   }
 
-  function totaalGemaakt(productId) {
-    return productieData
-      .filter(item => String(item.product_id) === String(productId))
-      .reduce((totaal, item) => totaal + Number(item.aantal || 0), 0);
+  function totaalGemaakt(productId){
+    return productieData.filter(item=>String(item.product_id)===String(productId)).reduce((totaal,item)=>totaal+Number(item.aantal||0),0);
   }
 
-  function totaalDerving(productId) {
-    return dervingData
-      .filter(item => String(item.product_id) === String(productId))
-      .reduce((totaal, item) => totaal + Number(item.aantal || 0), 0);
+  function totaalDerving(productId){
+    return dervingData.filter(item=>String(item.product_id)===String(productId)).reduce((totaal,item)=>totaal+Number(item.aantal||0),0);
   }
 
-  function cijfersVoorProduct(productId) {
-    const gemaakt = totaalGemaakt(productId);
-    const derving = totaalDerving(productId);
-    const verkocht = Math.max(gemaakt - derving, 0);
-    const verkoopPercentage = gemaakt > 0 ? Math.round((verkocht / gemaakt) * 100) : 0;
-    const dervingPercentage = gemaakt > 0 ? Math.round((derving / gemaakt) * 100) : 0;
+  function cijfersVoorProduct(productId){
+    const gemaakt=totaalGemaakt(productId);
+    const derving=totaalDerving(productId);
+    const verkocht=Math.max(gemaakt-derving,0);
+    const verkoopPercentage=gemaakt>0?Math.round((verkocht/gemaakt)*100):0;
+    const dervingPercentage=gemaakt>0?Math.round((derving/gemaakt)*100):0;
+    let advies="Geen productie gevonden";
+    let analyse="Nog geen analyse mogelijk.";
 
-    let advies = "Geen productie gevonden";
-    let analyse = "Nog geen analyse mogelijk.";
-
-    if (gemaakt > 0 && dervingPercentage <= 5) {
-      advies = "Meer of gelijk produceren";
-      analyse = "Sterk product: lage derving en goede verkoop.";
-    } else if (gemaakt > 0 && dervingPercentage <= 15) {
-      advies = "Gelijk houden";
-      analyse = "Redelijk stabiel product. Houd de aantallen voorlopig gelijk.";
-    } else if (gemaakt > 0) {
-      advies = "Minder produceren";
-      analyse = "Aandachtspunt: relatief veel derving. Verlaag productie of verkoop eerder op de dag actief uit.";
+    if(gemaakt>0&&dervingPercentage<=5){
+      advies="Meer of gelijk produceren";
+      analyse="Sterk product: lage derving en goede verkoop.";
+    }else if(gemaakt>0&&dervingPercentage<=15){
+      advies="Gelijk houden";
+      analyse="Redelijk stabiel product. Houd de aantallen voorlopig gelijk.";
+    }else if(gemaakt>0){
+      advies="Minder produceren";
+      analyse="Aandachtspunt: relatief veel derving. Verlaag productie of verkoop eerder op de dag actief uit.";
     }
 
-    return { gemaakt, derving, verkocht, verkoopPercentage, dervingPercentage, advies, analyse };
+    return{gemaakt,derving,verkocht,verkoopPercentage,dervingPercentage,advies,analyse};
   }
 
-  function renderAlles() {
+  function renderAlles(){
     renderProductie();
     renderAvondplanning();
     renderKoellades();
@@ -1015,44 +592,34 @@
     renderAnalyse();
   }
 
-  function renderProductie() {
-    const list = document.getElementById("vandaagList");
-
-    if (productieData.length === 0) {
-      list.innerHTML = `<p class="muted">Nog geen productie ingevoerd.</p>`;
-      return;
-    }
-
-    list.innerHTML = productieData.map(item => `
+  function renderProductie(){
+    const list=document.getElementById("vandaagList");
+    if(productieData.length===0){list.innerHTML=`<p class="muted">Nog geen productie ingevoerd.</p>`;return}
+    list.innerHTML=productieData.map(item=>`
       <div class="card">
         <strong>${productNaam(item.product_id)}</strong>
         ${item.aantal} stuks gemaakt<br>
-        Medewerker: ${item.medewerker || "-"}<br>
-        Opmerking: ${item.opmerking || "-"}<br>
-        <span class="muted">${item.datum || "-"} - ${new Date(item.created_at).toLocaleTimeString("nl-NL", { hour: "2-digit", minute: "2-digit" })}</span><br>
+        Medewerker: ${item.medewerker||"-"}<br>
+        Opmerking: ${item.opmerking||"-"}<br>
+        <span class="muted">${item.datum||"-"} - ${new Date(item.created_at).toLocaleTimeString("nl-NL",{hour:"2-digit",minute:"2-digit"})}</span><br>
         <button class="delete-btn" onclick="verwijderRij('productie', ${item.id})">Verwijderen</button>
       </div>
     `).join("");
   }
 
-  function renderAvondplanning() {
-    const list = document.getElementById("avondList");
-
-    if (avondData.length === 0) {
-      list.innerHTML = `<p class="muted">Nog geen avondplanning ingevoerd.</p>`;
-      return;
-    }
-
-    list.innerHTML = avondData.map(item => {
-      const klaar = item.status === "Klaar";
-      return `
-        <div class="card ${klaar ? "klaar" : ""}">
-          <strong>${klaar ? "✓ " : ""}${productNaam(item.product_id)}</strong>
+  function renderAvondplanning(){
+    const list=document.getElementById("avondList");
+    if(avondData.length===0){list.innerHTML=`<p class="muted">Nog geen avondplanning ingevoerd.</p>`;return}
+    list.innerHTML=avondData.map(item=>{
+      const klaar=item.status==="Klaar";
+      return`
+        <div class="card ${klaar?"klaar":""}">
+          <strong>${klaar?"✓ ":""}${productNaam(item.product_id)}</strong>
           Aantal te maken: ${item.aantal}<br>
-          Status: ${klaar ? "Klaar" : "Nog doen"}<br>
-          <span class="muted">${item.datum || "-"}</span><br>
-          <button class="${klaar ? "undo-btn" : "done-btn"}" onclick="toggleAvondKlaar(${item.id}, '${item.status || "Nog doen"}')">
-            ${klaar ? "Terug naar nog doen" : "Afvinken als klaar"}
+          Status: ${klaar?"Klaar":"Nog doen"}<br>
+          <span class="muted">${item.datum||"-"}</span><br>
+          <button class="${klaar?"undo-btn":"done-btn"}" onclick="toggleAvondKlaar(${item.id}, '${item.status||"Nog doen"}')">
+            ${klaar?"Terug naar nog doen":"Afvinken als klaar"}
           </button>
           <button class="delete-btn" onclick="verwijderRij('avondplanning', ${item.id})">Verwijderen</button>
         </div>
@@ -1060,78 +627,61 @@
     }).join("");
   }
 
-  function renderKoellades() {
-    const list = document.getElementById("koelladesList");
-
-    if (koelladesData.length === 0) {
-      list.innerHTML = `<p class="muted">Nog geen voorraad in koellades ingevoerd.</p>`;
-      return;
-    }
-
-    list.innerHTML = koelladesData.map(item => `
+  function renderKoellades(){
+    const list=document.getElementById("koelladesList");
+    if(koelladesData.length===0){list.innerHTML=`<p class="muted">Nog geen voorraad in koellades ingevoerd.</p>`;return}
+    list.innerHTML=koelladesData.map(item=>`
       <div class="card">
         <strong>${productNaam(item.product_id)}</strong>
         Aantal: ${item.aantal}<br>
-        Productiedatum: ${item.productiedatum || "-"}<br>
-        THT: ${item.tht_datum || "-"}<br>
-        Locatie: ${item.locatie || "-"}<br>
+        Productiedatum: ${item.productiedatum||"-"}<br>
+        THT: ${item.tht_datum||"-"}<br>
+        Locatie: ${item.locatie||"-"}<br>
         <button class="delete-btn" onclick="verwijderRij('voorraad_koellades', ${item.id})">Verwijderen</button>
       </div>
     `).join("");
   }
 
-  function renderKoelcellen() {
-    const list = document.getElementById("koelcellenList");
-
-    if (koelcellenData.length === 0) {
-      list.innerHTML = `<p class="muted">Nog geen voorraad in koelcellen ingevoerd.</p>`;
-      return;
-    }
-
-    list.innerHTML = koelcellenData.map(item => `
+  function renderKoelcellen(){
+    const list=document.getElementById("koelcellenList");
+    if(koelcellenData.length===0){list.innerHTML=`<p class="muted">Nog geen voorraad in koelcellen ingevoerd.</p>`;return}
+    list.innerHTML=koelcellenData.map(item=>`
       <div class="card">
         <strong>${productNaam(item.product_id)}</strong>
         Aantal: ${item.aantal}<br>
-        Productiedatum: ${item.productiedatum || "-"}<br>
-        THT: ${item.tht_datum || "-"}<br>
-        Locatie: ${item.locatie || "-"}<br>
+        Productiedatum: ${item.productiedatum||"-"}<br>
+        THT: ${item.tht_datum||"-"}<br>
+        Locatie: ${item.locatie||"-"}<br>
         <button class="delete-btn" onclick="verwijderRij('voorraad_koelcellen', ${item.id})">Verwijderen</button>
       </div>
     `).join("");
   }
 
-  function renderVerkoopDerving() {
-    const list = document.getElementById("verkoopList");
-
-    if (dervingData.length === 0) {
-      list.innerHTML = `<p class="muted">Nog geen derving ingevoerd.</p>`;
-      return;
-    }
-
-    list.innerHTML = dervingData.map(item => `
+  function renderVerkoopDerving(){
+    const list=document.getElementById("verkoopList");
+    if(dervingData.length===0){list.innerHTML=`<p class="muted">Nog geen derving ingevoerd.</p>`;return}
+    list.innerHTML=dervingData.map(item=>`
       <div class="card">
         <strong>${productNaam(item.product_id)}</strong>
         Derving: ${item.aantal}<br>
-        <span class="muted">${item.datum || "-"}</span><br>
+        <span class="muted">${item.datum||"-"}</span><br>
         <button class="delete-btn" onclick="verwijderRij('derving', ${item.id})">Verwijderen</button>
       </div>
     `).join("");
   }
 
-  function renderDagrapport() {
-    const el = document.getElementById("dagrapportContent");
+  function renderDagrapport(){
+    const el=document.getElementById("dagrapportContent");
+    const productieVandaag=productieData.filter(item=>isVandaag(item.datum));
+    const avondVandaag=avondData.filter(item=>isVandaag(item.datum));
+    const avondKlaar=avondVandaag.filter(item=>item.status==="Klaar");
+    const avondNogDoen=avondVandaag.filter(item=>item.status!=="Klaar");
+    const dervingVandaag=dervingData.filter(item=>isVandaag(item.datum));
+    const totaalProductie=productieVandaag.reduce((sum,item)=>sum+Number(item.aantal||0),0);
+    const totaalAvond=avondVandaag.reduce((sum,item)=>sum+Number(item.aantal||0),0);
+    const totaalDervingVandaag=dervingVandaag.reduce((sum,item)=>sum+Number(item.aantal||0),0);
 
-    const productieVandaag = productieData.filter(item => isVandaag(item.datum));
-    const avondVandaag = avondData.filter(item => isVandaag(item.datum));
-    const avondKlaar = avondVandaag.filter(item => item.status === "Klaar");
-    const avondNogDoen = avondVandaag.filter(item => item.status !== "Klaar");
-    const dervingVandaag = dervingData.filter(item => isVandaag(item.datum));
-
-    const totaalProductie = productieVandaag.reduce((sum, item) => sum + Number(item.aantal || 0), 0);
-    const totaalAvond = avondVandaag.reduce((sum, item) => sum + Number(item.aantal || 0), 0);
-    const totaalDervingVandaag = dervingVandaag.reduce((sum, item) => sum + Number(item.aantal || 0), 0);
-
-    el.innerHTML = `
+    el.innerHTML=`
       <div class="stat-grid">
         <div class="stat">Gemaakt vandaag<strong>${totaalProductie}</strong></div>
         <div class="stat">Derving vandaag<strong>${totaalDervingVandaag}</strong></div>
@@ -1141,57 +691,32 @@
 
       <h3>Avond nog doen</h3>
       ${
-        avondNogDoen.length === 0
-        ? `<p class="muted">Alles is afgevinkt of er staat niets gepland.</p>`
-        : avondNogDoen.map(item => `
-          <div class="card">
-            <strong>${productNaam(item.product_id)}</strong>
-            ${item.aantal} stuks nog maken
-          </div>
-        `).join("")
+        avondNogDoen.length===0
+        ?`<p class="muted">Alles is afgevinkt of er staat niets gepland.</p>`
+        :avondNogDoen.map(item=>`<div class="card"><strong>${productNaam(item.product_id)}</strong>${item.aantal} stuks nog maken</div>`).join("")
       }
 
       <h3>Productie vandaag</h3>
       ${
-        productieVandaag.length === 0
-        ? `<p class="muted">Nog geen productie vandaag.</p>`
-        : productieVandaag.map(item => `
-          <div class="card">
-            <strong>${productNaam(item.product_id)}</strong>
-            ${item.aantal} stuks gemaakt<br>
-            Medewerker: ${item.medewerker || "-"}
-          </div>
-        `).join("")
+        productieVandaag.length===0
+        ?`<p class="muted">Nog geen productie vandaag.</p>`
+        :productieVandaag.map(item=>`<div class="card"><strong>${productNaam(item.product_id)}</strong>${item.aantal} stuks gemaakt<br>Medewerker: ${item.medewerker||"-"}</div>`).join("")
       }
 
       <h3>Derving vandaag</h3>
       ${
-        dervingVandaag.length === 0
-        ? `<p class="muted">Nog geen derving vandaag.</p>`
-        : dervingVandaag.map(item => `
-          <div class="card">
-            <strong>${productNaam(item.product_id)}</strong>
-            ${item.aantal} stuks derving
-          </div>
-        `).join("")
+        dervingVandaag.length===0
+        ?`<p class="muted">Nog geen derving vandaag.</p>`
+        :dervingVandaag.map(item=>`<div class="card"><strong>${productNaam(item.product_id)}</strong>${item.aantal} stuks derving</div>`).join("")
       }
     `;
   }
 
-  function renderAdvies() {
-    const el = document.getElementById("adviesContent");
-
-    const productenMetData = producten
-      .map(product => ({ ...product, ...cijfersVoorProduct(product.id) }))
-      .filter(product => product.gemaakt > 0 || product.derving > 0)
-      .sort((a, b) => b.dervingPercentage - a.dervingPercentage);
-
-    if (productenMetData.length === 0) {
-      el.innerHTML = `<p class="muted">Nog geen productieadvies beschikbaar.</p>`;
-      return;
-    }
-
-    el.innerHTML = productenMetData.map(product => `
+  function renderAdvies(){
+    const el=document.getElementById("adviesContent");
+    const productenMetData=producten.map(product=>({...product,...cijfersVoorProduct(product.id)})).filter(product=>product.gemaakt>0||product.derving>0).sort((a,b)=>b.dervingPercentage-a.dervingPercentage);
+    if(productenMetData.length===0){el.innerHTML=`<p class="muted">Nog geen productieadvies beschikbaar.</p>`;return}
+    el.innerHTML=productenMetData.map(product=>`
       <div class="card">
         <strong>${product.naam}</strong>
         Advies: ${product.advies}<br>
@@ -1203,25 +728,17 @@
     `).join("");
   }
 
-  function renderAnalyse() {
-    const el = document.getElementById("analyseContent");
+  function renderAnalyse(){
+    const el=document.getElementById("analyseContent");
+    const productenMetData=producten.map(product=>({...product,...cijfersVoorProduct(product.id)})).filter(product=>product.gemaakt>0||product.derving>0).sort((a,b)=>b.dervingPercentage-a.dervingPercentage);
+    if(productenMetData.length===0){el.innerHTML=`<p class="muted">Nog geen analyse beschikbaar.</p>`;return}
 
-    const productenMetData = producten
-      .map(product => ({ ...product, ...cijfersVoorProduct(product.id) }))
-      .filter(product => product.gemaakt > 0 || product.derving > 0)
-      .sort((a, b) => b.dervingPercentage - a.dervingPercentage);
+    const totaalGemaaktAlles=productenMetData.reduce((sum,p)=>sum+p.gemaakt,0);
+    const totaalDervingAlles=productenMetData.reduce((sum,p)=>sum+p.derving,0);
+    const totaalVerkochtAlles=productenMetData.reduce((sum,p)=>sum+p.verkocht,0);
+    const totaalDervingPercentage=totaalGemaaktAlles>0?Math.round((totaalDervingAlles/totaalGemaaktAlles)*100):0;
 
-    if (productenMetData.length === 0) {
-      el.innerHTML = `<p class="muted">Nog geen analyse beschikbaar.</p>`;
-      return;
-    }
-
-    const totaalGemaaktAlles = productenMetData.reduce((sum, p) => sum + p.gemaakt, 0);
-    const totaalDervingAlles = productenMetData.reduce((sum, p) => sum + p.derving, 0);
-    const totaalVerkochtAlles = productenMetData.reduce((sum, p) => sum + p.verkocht, 0);
-    const totaalDervingPercentage = totaalGemaaktAlles > 0 ? Math.round((totaalDervingAlles / totaalGemaaktAlles) * 100) : 0;
-
-    el.innerHTML = `
+    el.innerHTML=`
       <div class="stat-grid">
         <div class="stat">Totaal gemaakt<strong>${totaalGemaaktAlles}</strong></div>
         <div class="stat">Totaal verkocht<strong>${totaalVerkochtAlles}</strong></div>
@@ -1231,7 +748,7 @@
 
       <h3>Aandachtspunten</h3>
       ${
-        productenMetData.map(product => `
+        productenMetData.map(product=>`
           <div class="card">
             <strong>${product.naam}</strong>
             ${product.analyse}<br>
