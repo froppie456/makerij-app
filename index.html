@@ -2,41 +2,46 @@
 <html lang="nl">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>Makerij App</title>
+
+  <meta name="theme-color" content="#111111">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Makerij">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
     * { box-sizing: border-box; font-family: Arial, sans-serif; }
-    body { margin: 0; background: #f4f4f4; color: #111; }
-    header { background: #111; color: white; padding: 18px; text-align: center; }
-    header h1 { margin: 0; font-size: 22px; }
 
-    nav {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 8px;
-      padding: 12px;
-      background: white;
+    body {
+      margin: 0;
+      background: #f4f4f4;
+      color: #111;
+      padding-bottom: 92px;
+    }
+
+    header {
+      background: #111;
+      color: white;
+      padding: 18px;
+      text-align: center;
       position: sticky;
       top: 0;
-      z-index: 10;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      z-index: 20;
     }
 
-    nav button, nav select {
-      width: 100%;
-      padding: 12px;
-      border: 2px solid #111;
-      border-radius: 12px;
-      background: white;
-      color: #111;
-      font-size: 15px;
-      font-weight: bold;
-      cursor: pointer;
+    header h1 {
+      margin: 0;
+      font-size: 21px;
     }
 
-    main { padding: 14px; max-width: 900px; margin: auto; }
+    main {
+      padding: 14px;
+      max-width: 900px;
+      margin: auto;
+    }
 
     section {
       display: none;
@@ -44,11 +49,12 @@
       padding: 16px;
       border-radius: 14px;
       box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-      margin-bottom: 20px;
+      margin-bottom: 18px;
     }
 
     section.active { display: block; }
-    h2 { margin-top: 0; font-size: 20px; }
+
+    h2 { margin-top: 0; font-size: 21px; }
     h3 { margin-top: 18px; font-size: 17px; }
 
     label {
@@ -64,34 +70,34 @@
       border: 1px solid #ccc;
       border-radius: 10px;
       font-size: 16px;
+      background: white;
     }
 
-    textarea { min-height: 70px; resize: vertical; }
+    textarea {
+      min-height: 70px;
+      resize: vertical;
+    }
 
-    .save-btn {
+    .save-btn, .secondary-btn, .refresh-btn {
       width: 100%;
-      margin-top: 16px;
+      margin-top: 14px;
       padding: 14px;
-      border: none;
       border-radius: 12px;
-      background: #111;
-      color: white;
       font-size: 16px;
       font-weight: bold;
       cursor: pointer;
     }
 
-    .secondary-btn {
-      width: 100%;
-      margin-top: 12px;
-      padding: 13px;
+    .save-btn {
+      border: none;
+      background: #111;
+      color: white;
+    }
+
+    .secondary-btn, .refresh-btn {
       border: 2px solid #111;
-      border-radius: 12px;
       background: white;
       color: #111;
-      font-size: 15px;
-      font-weight: bold;
-      cursor: pointer;
     }
 
     .card {
@@ -100,6 +106,7 @@
       padding: 12px;
       margin-top: 12px;
       border-left: 5px solid #111;
+      line-height: 1.45;
     }
 
     .card strong {
@@ -108,7 +115,18 @@
       margin-bottom: 4px;
     }
 
-    .muted { color: #666; font-size: 14px; }
+    .blok {
+      background: #f7f7f7;
+      border-radius: 12px;
+      padding: 12px;
+      margin-bottom: 18px;
+      border: 1px solid #ddd;
+    }
+
+    .muted {
+      color: #666;
+      font-size: 14px;
+    }
 
     .delete-btn {
       margin-top: 10px;
@@ -120,51 +138,72 @@
       cursor: pointer;
     }
 
-    .refresh-btn {
-      width: 100%;
-      margin-bottom: 12px;
-      padding: 12px;
-      border: 2px solid #111;
-      border-radius: 12px;
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
       background: white;
-      font-weight: bold;
-      cursor: pointer;
+      border-top: 1px solid #ddd;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+      padding: 8px;
+      padding-bottom: calc(8px + env(safe-area-inset-bottom));
+      z-index: 50;
+      box-shadow: 0 -2px 10px rgba(0,0,0,0.08);
     }
 
-    .blok {
+    .bottom-nav button {
+      border: 1px solid #ccc;
+      background: #f7f7f7;
+      border-radius: 12px;
+      padding: 10px 6px;
+      font-size: 12px;
+      font-weight: bold;
+      color: #111;
+      cursor: pointer;
+      min-height: 48px;
+    }
+
+    .bottom-nav button.active {
+      background: #111;
+      color: white;
+      border-color: #111;
+    }
+
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .stat {
       background: #f7f7f7;
       border-radius: 12px;
       padding: 12px;
-      margin-bottom: 18px;
       border: 1px solid #ddd;
     }
 
-    @media (max-width: 700px) {
-      nav { grid-template-columns: 1fr; }
+    .stat strong {
+      display: block;
+      font-size: 22px;
+      margin-top: 4px;
+    }
+
+    @media (min-width: 800px) {
+      .bottom-nav {
+        grid-template-columns: repeat(7, 1fr);
+      }
     }
   </style>
 </head>
 
 <body>
 <header>
-  <h1>Makerij Dagplanning & Voorraad</h1>
+  <h1>Makerij App</h1>
 </header>
-
-<nav>
-  <select onchange="openTab(this.value); this.value='';">
-    <option value="">Productie</option>
-    <option value="vandaag">Vandaag gemaakt</option>
-    <option value="avond">Moet gemaakt worden avond</option>
-  </select>
-
-  <select onchange="openTab(this.value); this.value='';">
-    <option value="">Voorraad / THT</option>
-    <option value="koellades">Koellades afdeling</option>
-    <option value="koelcellen">Koelcellen boven</option>
-  </select>
-
-  <button onclick="openTab('verkoop')">Verkoop & Derving</button>
-</nav>
 
 <main>
   <button class="refresh-btn" onclick="laadAlles()">Vernieuwen</button>
@@ -198,7 +237,7 @@
   </section>
 
   <section id="avond">
-    <h2>Moet gemaakt worden in de avond</h2>
+    <h2>Moet gemaakt worden avond</h2>
 
     <div class="blok">
       <h3>Nieuw product toevoegen</h3>
@@ -237,7 +276,7 @@
   </section>
 
   <section id="koellades">
-    <h2>Voorraad koellades afdeling</h2>
+    <h2>Voorraad koellades</h2>
 
     <div class="blok">
       <h3>Nieuw product toevoegen</h3>
@@ -268,7 +307,7 @@
   </section>
 
   <section id="koelcellen">
-    <h2>Voorraad koelcellen boven</h2>
+    <h2>Voorraad koelcellen</h2>
 
     <div class="blok">
       <h3>Nieuw product toevoegen</h3>
@@ -321,7 +360,36 @@
     <button class="save-btn" onclick="slaDervingOp()">Opslaan</button>
     <div id="verkoopList"></div>
   </section>
+
+  <section id="dagrapport">
+    <h2>Dagrapportage</h2>
+    <p class="muted">Overzicht van vandaag op basis van ingevoerde productie, avondplanning, voorraad en derving.</p>
+    <div id="dagrapportContent"></div>
+  </section>
+
+  <section id="advies">
+    <h2>Productieadvies</h2>
+    <p class="muted">Advies per product op basis van productie en derving.</p>
+    <div id="adviesContent"></div>
+  </section>
+
+  <section id="analyse">
+    <h2>Analyse derving/verkoop</h2>
+    <p class="muted">Automatische analyse van verkooppercentage, derving en aandachtspunten.</p>
+    <div id="analyseContent"></div>
+  </section>
 </main>
+
+<nav class="bottom-nav">
+  <button id="nav-vandaag" class="active" onclick="openTab('vandaag')">Vandaag</button>
+  <button id="nav-avond" onclick="openTab('avond')">Avond</button>
+  <button id="nav-koellades" onclick="openTab('koellades')">Lades</button>
+  <button id="nav-koelcellen" onclick="openTab('koelcellen')">Cellen</button>
+  <button id="nav-verkoop" onclick="openTab('verkoop')">Derving</button>
+  <button id="nav-dagrapport" onclick="openTab('dagrapport')">Rapport</button>
+  <button id="nav-advies" onclick="openTab('advies')">Advies</button>
+  <button id="nav-analyse" onclick="openTab('analyse')">Analyse</button>
+</nav>
 
 <script>
   const SUPABASE_URL = "https://iifgmebfinlftozezyvs.supabase.co";
@@ -352,7 +420,30 @@
       section.classList.remove("active");
     });
 
+    document.querySelectorAll(".bottom-nav button").forEach(button => {
+      button.classList.remove("active");
+    });
+
     document.getElementById(tabId).classList.add("active");
+
+    const navButton = document.getElementById("nav-" + tabId);
+    if (navButton) navButton.classList.add("active");
+
+    renderAlles();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  function vandaagDatum() {
+    return new Date().toISOString().split("T")[0];
+  }
+
+  function isVandaag(datum) {
+    return datum === vandaagDatum();
+  }
+
+  function productNaam(productId) {
+    const product = producten.find(p => String(p.id) === String(productId));
+    return product ? product.naam : "Onbekend product";
   }
 
   function vulCategorieDropdowns() {
@@ -377,11 +468,6 @@
         select.appendChild(option);
       });
     });
-  }
-
-  function productNaam(productId) {
-    const product = producten.find(p => String(p.id) === String(productId));
-    return product ? product.naam : "Onbekend product";
   }
 
   async function laadAlles() {
@@ -719,25 +805,28 @@
       .reduce((totaal, item) => totaal + Number(item.aantal || 0), 0);
   }
 
-  function adviesVoorProduct(productId) {
+  function cijfersVoorProduct(productId) {
     const gemaakt = totaalGemaakt(productId);
     const derving = totaalDerving(productId);
     const verkocht = Math.max(gemaakt - derving, 0);
-
     const verkoopPercentage = gemaakt > 0 ? Math.round((verkocht / gemaakt) * 100) : 0;
     const dervingPercentage = gemaakt > 0 ? Math.round((derving / gemaakt) * 100) : 0;
 
     let advies = "Geen productie gevonden";
+    let analyse = "Nog geen analyse mogelijk.";
 
     if (gemaakt > 0 && dervingPercentage <= 5) {
       advies = "Meer of gelijk produceren";
+      analyse = "Sterk product: lage derving en goede verkoop.";
     } else if (gemaakt > 0 && dervingPercentage <= 15) {
       advies = "Gelijk houden";
+      analyse = "Redelijk stabiel product. Houd de aantallen voorlopig gelijk.";
     } else if (gemaakt > 0) {
       advies = "Minder produceren";
+      analyse = "Aandachtspunt: relatief veel derving. Verlaag productie of verkoop eerder op de dag actief uit.";
     }
 
-    return { gemaakt, derving, verkocht, verkoopPercentage, dervingPercentage, advies };
+    return { gemaakt, derving, verkocht, verkoopPercentage, dervingPercentage, advies, analyse };
   }
 
   function renderAlles() {
@@ -746,6 +835,9 @@
     renderKoellades();
     renderKoelcellen();
     renderVerkoopDerving();
+    renderDagrapport();
+    renderAdvies();
+    renderAnalyse();
   }
 
   function renderProductie() {
@@ -832,47 +924,131 @@
   function renderVerkoopDerving() {
     const list = document.getElementById("verkoopList");
 
-    if (producten.length === 0) {
-      list.innerHTML = `<p class="muted">Nog geen producten gevonden.</p>`;
+    if (dervingData.length === 0) {
+      list.innerHTML = `<p class="muted">Nog geen derving ingevoerd.</p>`;
       return;
     }
+
+    list.innerHTML = dervingData.map(item => `
+      <div class="card">
+        <strong>${productNaam(item.product_id)}</strong>
+        Derving: ${item.aantal}<br>
+        <span class="muted">${item.datum || "-"}</span><br>
+        <button class="delete-btn" onclick="verwijderRij('derving', ${item.id})">Verwijderen</button>
+      </div>
+    `).join("");
+  }
+
+  function renderDagrapport() {
+    const el = document.getElementById("dagrapportContent");
+
+    const productieVandaag = productieData.filter(item => isVandaag(item.datum));
+    const avondVandaag = avondData.filter(item => isVandaag(item.datum));
+    const dervingVandaag = dervingData.filter(item => isVandaag(item.datum));
+
+    const totaalProductie = productieVandaag.reduce((sum, item) => sum + Number(item.aantal || 0), 0);
+    const totaalAvond = avondVandaag.reduce((sum, item) => sum + Number(item.aantal || 0), 0);
+    const totaalDervingVandaag = dervingVandaag.reduce((sum, item) => sum + Number(item.aantal || 0), 0);
+
+    el.innerHTML = `
+      <div class="stat-grid">
+        <div class="stat">Gemaakt vandaag<strong>${totaalProductie}</strong></div>
+        <div class="stat">Derving vandaag<strong>${totaalDervingVandaag}</strong></div>
+        <div class="stat">Avondplanning<strong>${totaalAvond}</strong></div>
+        <div class="stat">Voorraadregels<strong>${koelladesData.length + koelcellenData.length}</strong></div>
+      </div>
+
+      <h3>Productie vandaag</h3>
+      ${
+        productieVandaag.length === 0
+        ? `<p class="muted">Nog geen productie vandaag.</p>`
+        : productieVandaag.map(item => `
+          <div class="card">
+            <strong>${productNaam(item.product_id)}</strong>
+            ${item.aantal} stuks gemaakt<br>
+            Medewerker: ${item.medewerker || "-"}
+          </div>
+        `).join("")
+      }
+
+      <h3>Derving vandaag</h3>
+      ${
+        dervingVandaag.length === 0
+        ? `<p class="muted">Nog geen derving vandaag.</p>`
+        : dervingVandaag.map(item => `
+          <div class="card">
+            <strong>${productNaam(item.product_id)}</strong>
+            ${item.aantal} stuks derving
+          </div>
+        `).join("")
+      }
+    `;
+  }
+
+  function renderAdvies() {
+    const el = document.getElementById("adviesContent");
 
     const productenMetData = producten
-      .map(product => {
-        const cijfers = adviesVoorProduct(product.id);
-        return { ...product, ...cijfers };
-      })
-      .filter(product => product.gemaakt > 0 || product.derving > 0);
+      .map(product => ({ ...product, ...cijfersVoorProduct(product.id) }))
+      .filter(product => product.gemaakt > 0 || product.derving > 0)
+      .sort((a, b) => b.dervingPercentage - a.dervingPercentage);
 
     if (productenMetData.length === 0) {
-      list.innerHTML = `<p class="muted">Nog geen productie of derving ingevoerd.</p>`;
+      el.innerHTML = `<p class="muted">Nog geen productieadvies beschikbaar.</p>`;
       return;
     }
 
-    list.innerHTML = productenMetData.map(product => `
+    el.innerHTML = productenMetData.map(product => `
       <div class="card">
         <strong>${product.naam}</strong>
+        Advies: ${product.advies}<br>
         Gemaakt: ${product.gemaakt}<br>
         Derving: ${product.derving}<br>
         Verkocht: ${product.verkocht}<br>
-        Verkooppercentage: ${product.verkoopPercentage}%<br>
-        Dervingspercentage: ${product.dervingPercentage}%<br>
-        Advies: ${product.advies}
+        Derving: ${product.dervingPercentage}%<br>
       </div>
     `).join("");
+  }
 
-    if (dervingData.length > 0) {
-      list.innerHTML += `<h3>Ingevoerde derving</h3>`;
+  function renderAnalyse() {
+    const el = document.getElementById("analyseContent");
 
-      list.innerHTML += dervingData.map(item => `
-        <div class="card">
-          <strong>${productNaam(item.product_id)}</strong>
-          Derving: ${item.aantal}<br>
-          <span class="muted">${item.datum || "-"}</span><br>
-          <button class="delete-btn" onclick="verwijderRij('derving', ${item.id})">Verwijderen</button>
-        </div>
-      `).join("");
+    const productenMetData = producten
+      .map(product => ({ ...product, ...cijfersVoorProduct(product.id) }))
+      .filter(product => product.gemaakt > 0 || product.derving > 0)
+      .sort((a, b) => b.dervingPercentage - a.dervingPercentage);
+
+    if (productenMetData.length === 0) {
+      el.innerHTML = `<p class="muted">Nog geen analyse beschikbaar.</p>`;
+      return;
     }
+
+    const totaalGemaaktAlles = productenMetData.reduce((sum, p) => sum + p.gemaakt, 0);
+    const totaalDervingAlles = productenMetData.reduce((sum, p) => sum + p.derving, 0);
+    const totaalVerkochtAlles = productenMetData.reduce((sum, p) => sum + p.verkocht, 0);
+    const totaalDervingPercentage = totaalGemaaktAlles > 0 ? Math.round((totaalDervingAlles / totaalGemaaktAlles) * 100) : 0;
+
+    el.innerHTML = `
+      <div class="stat-grid">
+        <div class="stat">Totaal gemaakt<strong>${totaalGemaaktAlles}</strong></div>
+        <div class="stat">Totaal verkocht<strong>${totaalVerkochtAlles}</strong></div>
+        <div class="stat">Totaal derving<strong>${totaalDervingAlles}</strong></div>
+        <div class="stat">Derving %<strong>${totaalDervingPercentage}%</strong></div>
+      </div>
+
+      <h3>Aandachtspunten</h3>
+      ${
+        productenMetData.map(product => `
+          <div class="card">
+            <strong>${product.naam}</strong>
+            ${product.analyse}<br>
+            Verkooppercentage: ${product.verkoopPercentage}%<br>
+            Dervingspercentage: ${product.dervingPercentage}%<br>
+            Advies: ${product.advies}
+          </div>
+        `).join("")
+      }
+    `;
   }
 
   laadAlles();
