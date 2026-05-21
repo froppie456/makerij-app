@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="nl">
 <head>
   <meta charset="UTF-8" />
@@ -139,12 +139,6 @@
       border: 1px solid #ddd;
     }
 
-    hr {
-      border: none;
-      border-top: 1px solid #ddd;
-      margin: 18px 0;
-    }
-
     @media (max-width: 700px) {
       nav { grid-template-columns: 1fr; }
     }
@@ -173,7 +167,6 @@
 </nav>
 
 <main>
-
   <button class="refresh-btn" onclick="laadAlles()">Vernieuwen</button>
 
   <section id="vandaag" class="active">
@@ -303,7 +296,6 @@
     <button class="save-btn" onclick="slaDervingOp()">Opslaan</button>
     <div id="verkoopList"></div>
   </section>
-
 </main>
 
 <script>
@@ -346,14 +338,14 @@
 
   async function laadProducten() {
     const { data, error } = await db
-      .from("producten")
+      .from("producten_makerij")
       .select("*")
       .eq("actief", true)
       .order("naam", { ascending: true });
 
     if (error) {
-      console.error(error);
-      alert("Producten laden mislukt.");
+      console.error("Producten laden fout:", error);
+      alert("Producten laden mislukt: " + error.message);
       return;
     }
 
@@ -394,19 +386,19 @@
       return;
     }
 
-    const { error } = await db.from("producten").insert({
+    const { error } = await db.from("producten_makerij").insert({
       naam: naam,
       categorie: categorie,
       actief: true
     });
 
     if (error) {
-      console.error(error);
+      console.error("Product toevoegen fout:", error);
 
       if (error.code === "23505") {
         alert("Dit product bestaat al.");
       } else {
-        alert("Product toevoegen mislukt.");
+        alert("Product toevoegen mislukt: " + error.message);
       }
 
       return;
@@ -426,8 +418,8 @@
       .order("created_at", { ascending: false });
 
     if (error) {
-      console.error(error);
-      alert("Productie laden mislukt.");
+      console.error("Productie laden fout:", error);
+      alert("Productie laden mislukt: " + error.message);
       return;
     }
 
@@ -441,8 +433,8 @@
       .order("created_at", { ascending: false });
 
     if (error) {
-      console.error(error);
-      alert("Avondplanning laden mislukt.");
+      console.error("Avondplanning laden fout:", error);
+      alert("Avondplanning laden mislukt: " + error.message);
       return;
     }
 
@@ -456,8 +448,8 @@
       .order("tht_datum", { ascending: true });
 
     if (error) {
-      console.error(error);
-      alert("Koellades laden mislukt.");
+      console.error("Koellades laden fout:", error);
+      alert("Koellades laden mislukt: " + error.message);
       return;
     }
 
@@ -471,8 +463,8 @@
       .order("tht_datum", { ascending: true });
 
     if (error) {
-      console.error(error);
-      alert("Koelcellen laden mislukt.");
+      console.error("Koelcellen laden fout:", error);
+      alert("Koelcellen laden mislukt: " + error.message);
       return;
     }
 
@@ -486,8 +478,8 @@
       .order("created_at", { ascending: false });
 
     if (error) {
-      console.error(error);
-      alert("Derving laden mislukt.");
+      console.error("Derving laden fout:", error);
+      alert("Derving laden mislukt: " + error.message);
       return;
     }
 
@@ -506,15 +498,15 @@
     }
 
     const { error } = await db.from("productie").insert({
-      product_id: productId,
+      product_id: Number(productId),
       aantal,
       medewerker,
       opmerking
     });
 
     if (error) {
-      console.error(error);
-      alert("Productie opslaan mislukt.");
+      console.error("Productie opslaan fout:", error);
+      alert("Productie opslaan mislukt: " + error.message);
       return;
     }
 
@@ -535,7 +527,7 @@
     }
 
     const { error } = await db.from("avondplanning").insert({
-      product_id: productId,
+      product_id: Number(productId),
       aantal,
       prioriteit,
       status,
@@ -543,8 +535,8 @@
     });
 
     if (error) {
-      console.error(error);
-      alert("Avondplanning opslaan mislukt.");
+      console.error("Avondplanning opslaan fout:", error);
+      alert("Avondplanning opslaan mislukt: " + error.message);
       return;
     }
 
@@ -562,7 +554,7 @@
     }
 
     const { error } = await db.from("voorraad_koellades").insert({
-      product_id: productId,
+      product_id: Number(productId),
       aantal,
       productiedatum: document.getElementById("koelladesProductiedatum").value || null,
       tht_datum: document.getElementById("koelladesTht").value || null,
@@ -570,8 +562,8 @@
     });
 
     if (error) {
-      console.error(error);
-      alert("Koelladevoorraad opslaan mislukt.");
+      console.error("Koellades opslaan fout:", error);
+      alert("Koelladevoorraad opslaan mislukt: " + error.message);
       return;
     }
 
@@ -589,7 +581,7 @@
     }
 
     const { error } = await db.from("voorraad_koelcellen").insert({
-      product_id: productId,
+      product_id: Number(productId),
       aantal,
       productiedatum: document.getElementById("koelcellenProductiedatum").value || null,
       tht_datum: document.getElementById("koelcellenTht").value || null,
@@ -597,8 +589,8 @@
     });
 
     if (error) {
-      console.error(error);
-      alert("Koelcelvoorraad opslaan mislukt.");
+      console.error("Koelcellen opslaan fout:", error);
+      alert("Koelcelvoorraad opslaan mislukt: " + error.message);
       return;
     }
 
@@ -616,13 +608,13 @@
     }
 
     const { error } = await db.from("derving").insert({
-      product_id: productId,
+      product_id: Number(productId),
       aantal
     });
 
     if (error) {
-      console.error(error);
-      alert("Derving opslaan mislukt.");
+      console.error("Derving opslaan fout:", error);
+      alert("Derving opslaan mislukt: " + error.message);
       return;
     }
 
@@ -637,8 +629,8 @@
       .eq("id", id);
 
     if (error) {
-      console.error(error);
-      alert("Verwijderen mislukt. Controleer of je delete-policy in Supabase aanstaat.");
+      console.error("Verwijderen fout:", error);
+      alert("Verwijderen mislukt: " + error.message);
       return;
     }
 
