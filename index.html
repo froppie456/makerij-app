@@ -220,6 +220,32 @@
       box-shadow: 0 0 14px rgba(25,166,90,.22);
     }
 
+    .sub-nav {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 7px;
+      margin: 0 0 10px 0;
+    }
+
+    .sub-nav button {
+      border: 1px solid #d1d1d1;
+      background: white;
+      border-radius: 12px;
+      padding: 10px 6px;
+      font-size: 13px;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0,0,0,.05);
+    }
+
+    .sub-nav button.active {
+      background: #111;
+      color: white;
+      border-color: #111;
+      box-shadow: 0 0 14px rgba(25,166,90,.22);
+    }
+
+
     .card {
       background: linear-gradient(180deg, #fafafa, #f3f3f3);
       border-radius: 15px;
@@ -375,7 +401,7 @@
 
     @media(min-width:800px) {
       .bottom-nav {
-        grid-template-columns: repeat(7, 1fr);
+        grid-template-columns: repeat(5, 1fr);
       }
     }
   </style>
@@ -390,6 +416,11 @@
   <button class="refresh-btn" onclick="laadAlles()">Vernieuwen</button>
 
   <section id="vandaag" class="active">
+    <div class="sub-nav">
+      <button id="subnav-vandaag" class="active" onclick="openTab('vandaag')">Vandaag gemaakt</button>
+      <button id="subnav-avond" onclick="openTab('avond')">Te maken avond</button>
+    </div>
+
     <h2>Vandaag gemaakt</h2>
 
     <details class="accordion">
@@ -430,6 +461,11 @@
   </section>
 
   <section id="avond">
+    <div class="sub-nav">
+      <button id="subnav-vandaag" onclick="openTab('vandaag')">Vandaag gemaakt</button>
+      <button id="subnav-avond" class="active" onclick="openTab('avond')">Te maken avond</button>
+    </div>
+
     <h2>Te maken vanavond</h2>
 
     <details class="accordion">
@@ -464,6 +500,11 @@
   </section>
 
   <section id="koellades">
+    <div class="sub-nav">
+      <button id="subnav-koellades" class="active" onclick="openTab('koellades')">Koellades</button>
+      <button id="subnav-koelcellen" onclick="openTab('koelcellen')">Koelcellen</button>
+    </div>
+
     <h2>Voorraad koellades</h2>
 
     <details class="accordion">
@@ -507,6 +548,11 @@
   </section>
 
   <section id="koelcellen">
+    <div class="sub-nav">
+      <button id="subnav-koellades" onclick="openTab('koellades')">Koellades</button>
+      <button id="subnav-koelcellen" class="active" onclick="openTab('koelcellen')">Koelcellen</button>
+    </div>
+
     <h2>Voorraad koelcellen</h2>
 
     <details class="accordion">
@@ -616,10 +662,8 @@
 </main>
 
 <nav class="bottom-nav">
-  <button id="nav-vandaag" class="active" onclick="openTab('vandaag')">Vandaag</button>
-  <button id="nav-avond" onclick="openTab('avond')">Avond</button>
-  <button id="nav-koellades" onclick="openTab('koellades')">Lades</button>
-  <button id="nav-koelcellen" onclick="openTab('koelcellen')">Cellen</button>
+  <button id="nav-productie" class="active" onclick="openTab('vandaag')">Productie</button>
+  <button id="nav-voorraad" onclick="openTab('koellades')">Voorraad</button>
   <button id="nav-derving" onclick="openTab('derving')">Derving</button>
   <button id="nav-overzicht" onclick="openTab('overzicht')">Overzicht</button>
   <button id="nav-recepten" onclick="openTab('recepten')">Recepten</button>
@@ -682,11 +726,26 @@
   function openTab(tabId) {
     document.querySelectorAll("section").forEach(s => s.classList.remove("active"));
     document.querySelectorAll(".bottom-nav button").forEach(b => b.classList.remove("active"));
+    document.querySelectorAll(".sub-nav button").forEach(b => b.classList.remove("active"));
 
     document.getElementById(tabId).classList.add("active");
 
-    const nav = document.getElementById("nav-" + tabId);
-    if (nav) nav.classList.add("active");
+    if (tabId === "vandaag" || tabId === "avond") {
+      const nav = document.getElementById("nav-productie");
+      if (nav) nav.classList.add("active");
+
+      const sub = document.getElementById("subnav-" + tabId);
+      if (sub) sub.classList.add("active");
+    } else if (tabId === "koellades" || tabId === "koelcellen") {
+      const nav = document.getElementById("nav-voorraad");
+      if (nav) nav.classList.add("active");
+
+      const sub = document.getElementById("subnav-" + tabId);
+      if (sub) sub.classList.add("active");
+    } else {
+      const nav = document.getElementById("nav-" + tabId);
+      if (nav) nav.classList.add("active");
+    }
 
     renderAlles();
     window.scrollTo({ top: 0, behavior: "smooth" });
