@@ -874,7 +874,7 @@
   const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
   const categorieen = ["Broodjes", "Maaltijdcomponenten", "Pinsa", "Salades", "Voorraad te maken", "Wraps"];
-  const receptCategorieen = ["Broodjes", "Wraps", "Soepen", "Salades", "Maaltijden", "Pinsa", "Overig"];
+  const receptCategorieen = ["Salades", "Soepen"];
 
   const menus = ["vandaag", "avond", "koellades", "derving"];
   const productSelectIds = {
@@ -1421,19 +1421,11 @@
     await laadAlles();
   }
 
-  async function verwijderRecept(id) {
-    const { error } = await db
-      .from("recepten_makerij")
-      .update({ actief: false })
-      .eq("id", id);
-
-    if (error) {
-      alert("Recept verwijderen mislukt: " + error.message);
-      return;
+  function sluitReceptDetail() {
+    const detail = document.getElementById("receptDetail");
+    if (detail) {
+      detail.innerHTML = "";
     }
-
-    await laadAlles();
-    renderRecepten();
   }
 
   function startEditVoorraad(type, id) {
@@ -1940,7 +1932,7 @@
 
         ${
           recept.isEigen
-            ? `<button class="delete-btn" onclick="verwijderRecept(${recept.id})">Recept verbergen</button>`
+            ? `<button class="cancel-btn" onclick="sluitReceptDetail()">Recept sluiten</button>`
             : ""
         }
       </div>
